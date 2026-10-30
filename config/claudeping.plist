@@ -10,6 +10,8 @@
         <string>-lc</string>
         <string>/Users/joshamilton/.local/bin/claude -p "hey"</string>
     </array>
+    <key>WorkingDirectory</key>
+    <string>/Users/joshamilton/Documents/repos/claude-v2</string>
     <key>StartCalendarInterval</key>
     <dict>
         <key>Hour</key><integer>7</integer>

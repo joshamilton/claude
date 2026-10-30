@@ -27,9 +27,7 @@ This repo contains ... [TBD]
 
 6. Do not use `~/.claude/plans.md`. All plans go in the 
 
-7. Do not use Memory.md. Instead, memory should should be stored in the same Github repo, so that I have visibility into it and control over it.
-
-8. As part of the above, I do not use Claude memory (`autoMemoryEnabled: false`). Instead, I instruct Claude to create or update CLAUDE.md or SKILLS.md files instead. This provides visibility and control.
+7. Do not use MEMORY.md (`autoMemoryEnabled: false`). Instead, I instruct Claude to create or update CLAUDE.md or SKILLS.md files instead. This provides visibility and control.
 
 ## Where I use Claude
 
@@ -49,8 +47,7 @@ The LaunchAgent config lives in this repo at `config/claudeping.plist`.
 
 A LaunchAgent only fires while the Mac is awake. A sleeping laptop will not run it and will not wake itself up on its own, so the Mac also needs a scheduled wake set a few minutes before 7am. This uses `pmset repeat wake`, which is a separate macOS setting from the LaunchAgent and needs to be set up on its own.
 
-To set it up again on a Mac:
-
+To setup: 
 1. Confirm the Claude CLI is installed at `/Users/joshamilton/.local/bin/claude`:
     ```bash
     which claude
@@ -101,7 +98,6 @@ Logs from each run go to `/tmp/claudeping.log` (output) and `/tmp/claudeping.err
     ```
     Should be empty.
 
-
 8. To disable this feature, unload the LaunchAgent, remove the copy from LaunchAgents, and cancel the scheduled wake:
 
     ```bash
@@ -109,4 +105,97 @@ Logs from each run go to `/tmp/claudeping.log` (output) and `/tmp/claudeping.err
     rm /Users/joshamilton/Library/LaunchAgents/claudeping.plist
     sudo pmset repeat cancel
     ```
+
+### 2. Automatically cleanup the `~/.claude` folder
+
+This uses a macOS LaunchAgent to run a cleanup every morning at 6:58am, two minutes before the 7am prompt in section 1 above. The script removes all projects created outside an allowlist (`config/project-allowlist.txt`).
+
+For a project outside the allowlist, the script deletes:
+    - `~/.claude/projects/<sanitized-path>/` and its contents
+    - For every session UUID found in that folder (the `.jsonl` file names), the matching entries in:
+        - `~/.claude/session-env/<uuid>/`
+        - `~/.claude/file-history/<uuid>/`
+        - `~/.claude/debug/<uuid>.txt`
+        - `~/.claude/todos/<uuid>*.json`
+    - The project's own `.claude/` folder
+    
+Regardless of the allowlist, the script also deletes these folders in their entirety:
+    - `~/.claude/plans/`: Plan files live in each repo, so anything in `~/.claude/plans/` was created by error
+    - `~/.claude/sessions/`: Forces a fresh session each day, forcing me to start a new day's work with maximum attention to detail. Context from the previous day is lost.
+    - `~/.claude/ide/`: Created when the IDE starts. Removed for same reason as `~/.claude/sessions/`
+    - `~/.claude/shell-snapshots/`: Created when a session starts. Removed for same reason as `~/.claude/sessions/`
+
+To setup:
+
+1. Review `config/project-allowlist.txt` and confirm the allowed folders and patterns are correct. Add a line for any new root as needed.
+
+2. Copy the plist into the LaunchAgents folder:
+    ```bash
+    cp /Users/joshamilton/Documents/repos/claude-v2/config/claude-project-cleanup.plist /Users/joshamilton/Library/LaunchAgents/claude-project-cleanup.plist
+    ```
+
+3. Load it so it starts running:
+    ```bash
+    launchctl load /Users/joshamilton/Library/LaunchAgents/claude-project-cleanup.plist
+    ```
+
+4. Check that it is loaded:
+    ```bash
+    launchctl list | grep claude-project-cleanup
+    ```
+
+5. 24 hours after setup, check if the cleanup ran:
+    ```bash
+    cat /tmp/claude-project-cleanup.out
+    Removed 1 project(s) outside the allowlist.
+    ```
+    Should have one line per day.
+
+    ```bash
+    cat /tmp/claude-project-cleanup.err
+    ```
+    Should be empty.
+
+6. To disable this feature, unload the LaunchAgent and remove the copy from LaunchAgents:
+    ```bash
+    launchctl unload /Users/joshamilton/Library/LaunchAgents/claude-project-cleanup.plist
+    rm /Users/joshamilton/Library/LaunchAgents/claude-project-cleanup.plist
+    ```
+
+## About Claude:
+
+### The `~/.claude` folder
+
+The `~/.claude` folder contains many files and subfolders:
+    - .last-cleanup: global configuration file
+    - backups: config/settings backups
+    - cache: global cache (changelog, model catalog)
+    - CLAUDE.md: global configuration file
+    - debug/<uuid>.txt: the debug log for that session.
+    - file-history/<uuid>/: per-session file-edit history.
+    - ide: lock files keyed by process ID, for IDE integration
+    - plans: plan-mode output files, named randomly
+    - plugins: installed plugins
+    - projects: one folder per project. Contains that project's session transcripts, one .jsonl file per session, named by session UUID.
+    - session-env/<uuid>/: per-session environment state.
+    - sessions: auth/key files keyed by process ID, for the running CLI process itself
+    - settings.json: global configuration file
+    - shell-snapshots: shell environment snapshots, named by timestamp, not by project or session.
+    - skills: global configuration file
+    - stats-cache.json: global configuration file
+    - statsig: telemetry and feature-flag state
+    - todos/<uuid>-agent-<uuid>.json: the task list for that session or a subagent spawned within it.
+
+Based on my requirements, a full cleanup of a disallowed project needs to: 
+    - Identify disallowed projects in `~/.claude.projects`
+    - Read the session UUIDs
+    - Delete the disallowed projects from `~/.claude.projects`
+    - Remove matching entries from session-env/, file-history/, todos/, and debug/.
+
+Because the the utility can remove these folders in their entirety:
+    - ide: lock files keyed by process ID, for IDE integration
+    - plans: plan-mode output files, named randomly
+    - sessions: auth/key files keyed by process ID, for the running CLI process itself
+    - shell-snapshots: shell environment snapshots, named by timestamp, not by project or session.
+
 

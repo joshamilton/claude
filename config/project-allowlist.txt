@@ -1,0 +1,5 @@
+# Allowed Claude project directories, one shell glob pattern per line
+# Anything under a matching path (at any depth) is allowed.
+
+/Users/joshamilton/Documents/repos
+/Users/joshamilton/Documents/Employment/[0-9][0-9][0-9][0-9]-*
