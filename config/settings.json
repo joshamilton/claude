@@ -1,0 +1,53 @@
+{
+  "$schema": "https://www.schemastore.org/claude-code-settings.json",
+  "cleanupPeriodDays": 2,
+  "desktopSessionCleanupPeriodDays": 1,
+  "env": {
+    "CLAUDE_CODE_DISABLE_ERROR_REPORTING": "1",
+    "CLAUDE_CODE_DISABLE_FEEDBACK_SURVEY": "1",
+    "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1",
+    "CLAUDE_CODE_SKIP_PROMPT_HISTORY": "0",
+    "DISABLE_ERROR_REPORTING": "1",
+    "DISABLE_FEEDBACK_COMMAND": "1",
+    "DISABLE_TELEMETRY": "1",
+    "DO_NOT_TRACK": "1"
+  },
+  "model": "sonnet",
+  "disableWorkflows": true,
+  "disableArtifact": true,
+  "outputStyle": "Explanatory",
+  "skipWebFetchPreflight": true,
+  "feedbackSurveyRate": 0,
+  "feedbackDrafts": "off",
+  "spinnerTipsEnabled": false,
+  "spinnerVerbs": {
+    "mode": "replace",
+    "verbs": [
+      "Working"
+    ]
+  },
+  "effortLevel": "medium",
+  "modelSettings": {
+    "claude-fable-5-1": {
+      "effortLevel": "medium"
+    },
+    "claude-opus-5": {
+      "effortLevel": "medium"
+    },
+    "claude-opus-5-5": {
+      "effortLevel": "medium"
+    },
+    "claude-sonnet-5": {
+      "effortLevel": "medium"
+    },
+    "claude-sonnet-5-5": {
+      "effortLevel": "medium"
+    }
+  },
+  "prefersReducedMotion": true,
+  "autoMemoryEnabled": false,
+  "showThinkingSummaries": true,
+  "switchModelsOnFlag": true,
+  "fileCheckpointingEnabled": true,
+  "copyOnSelect": false
+}

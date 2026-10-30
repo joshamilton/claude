@@ -13,21 +13,24 @@ This repo contains ... [TBD]
 
 ## How I Use Claude
 
-1. I use Claude throughout the day: morning, afternoon, and evening. I automatically send a prompt to Claude Code at 7am, enabling me to have three 5-hour sessions a day: 7-12, 12-5, and 5-10. 
+1. I use Claude via a consumer plan (Pro / Max) and do not allow the use of chats and coding sessions to train my models (https://claude.ai/settings/data-privacy-controls).
 
-2. I only use the Claude CLI (including through Claude Code) via my personal MacBook Pro, never through the web interface or desktop/mobile apps. This gives me a single configuration across all interactions, and ensures all interactions are associated with a Project.
+2. I set a number of other privacy-protecting features in `~/claude/config/settings.json`.
 
-3. Claude Projects are only allowed in certain folders. I maintain a project allowlist, and automatically remove projects that were accidentally created outside the allowlist. This keeps things tidy.
+3. I use Claude throughout the day: morning, afternoon, and evening. I automatically send a prompt to Claude Code at 7am, enabling me to have three 5-hour sessions a day: 7-12, 12-5, and 5-10. 
 
-4. Project history gets pruned after 48 hours. I use the Claude setup `cleanupPeriodDays` for this. It keeps things tidy.
+4. I only use the Claude CLI (including through Claude Code) via my personal MacBook Pro, never through the web interface or desktop/mobile apps. This gives me a single configuration across all interactions, and ensures all interactions are associated with a Project.
 
-5. All Claude configuration goes into this standalone Git repo. I manually symlink into the appropriate folders as described in this document.
-    - To include: CLAUDE.md, SKILLS.md,
-    - Possibly styles, rules, as I begin to use them
+5. Claude Projects are only allowed in certain folders. I maintain a project allowlist, and automatically remove projects that were accidentally created outside the allowlist. This keeps things tidy.
 
-6. Do not use `~/.claude/plans.md`. All plans go in the 
+6. Project history gets pruned after 48 hours. I use the Claude setup `cleanupPeriodDays` for this. It keeps things tidy.
 
-7. Do not use MEMORY.md (`autoMemoryEnabled: false`). Instead, I instruct Claude to create or update CLAUDE.md or SKILLS.md files instead. This provides visibility and control.
+7. All Claude configuration goes into this standalone Git repo. I manually symlink into the appropriate folders as described in this document. Currently supported:
+    - settings.json
+
+8. Do not use `~/.claude/plans.md`. All plans go in the 
+
+9. Do not use MEMORY.md (`autoMemoryEnabled: false`). Instead, I instruct Claude to create or update CLAUDE.md or SKILLS.md files instead. This provides visibility and control.
 
 ## Where I use Claude
 
@@ -118,7 +121,7 @@ For a project outside the allowlist, the script deletes:
         - `~/.claude/debug/<uuid>.txt`
         - `~/.claude/todos/<uuid>*.json`
     - The project's own `.claude/` folder
-    
+
 Regardless of the allowlist, the script also deletes these folders in their entirety:
     - `~/.claude/plans/`: Plan files live in each repo, so anything in `~/.claude/plans/` was created by error
     - `~/.claude/sessions/`: Forces a fresh session each day, forcing me to start a new day's work with maximum attention to detail. Context from the previous day is lost.
@@ -162,6 +165,22 @@ To setup:
     rm /Users/joshamilton/Library/LaunchAgents/claude-project-cleanup.plist
     ```
 
+### 3. Symlink `settings.json`
+
+`config/settings.json` holds the global Claude Code settings, symlinked to `~/claude/config/settings.json`. The settings are saved in the order used by Claude Code, so I can easily spot differences.
+
+To setup:
+1. Symlink the repo copy into place:
+    ```bash
+    ln -s /Users/joshamilton/Documents/repos/claude-v2/config/settings.json ~/.claude/settings.json
+    ```
+
+2. Check that it resolved:
+    ```bash
+    ls -la ~/.claude/settings.json
+    /Users/joshamilton/.claude/settings.json -> /Users/joshamilton/Documents/repos/claude-v2/config/settings.json
+    ```
+
 ## About Claude:
 
 ### The `~/.claude` folder
@@ -199,3 +218,58 @@ Because the the utility can remove these folders in their entirety:
     - shell-snapshots: shell environment snapshots, named by timestamp, not by project or session.
 
 
+
+### Settings and Environmental Variables: `~/claude/settings.json`
+
+#### Environmental Variables
+Claude Environmental Variables are documented here: [Environment variables](https://code.claude.com/docs/en/env-vars).
+
+The following variables are enabled in `~/claude/settings.json`:
+
+- CLAUDE_CODE_DISABLE_ERROR_REPORTING: turn off error reporting
+- CLAUDE_CODE_DISABLE_FEEDBACK_SURVEY: turn off "how is Claude doing" survey
+- CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC: disable nonessential network traffic: auto-updates, telemetry, error reporting, the /feedback command, Claude-drafted feedback, release notes, the PR and MR status badge checks, and availability checks
+- DISABLE_ERROR_REPORTING: turn off sending error reports
+- DISABLE_FEEDBACK_COMMAND: turn off `feedback` command
+- DISABLE_TELEMETRY: turn off telemetry data collection 
+- DO_NOT_TRACK: general opt-out signal
+
+The following variables are not enabled in `~/claude/settings.json`, but are worth knowing about:
+- CLAUDE_CODE_SKIP_PROMPT_HISTORY": session transcripts are ephemeral, never stored on disk
+
+#### Settings
+Claude settings are documented here: [Settings](https://code.claude.com/docs/en/settings-reference). I identified the following settings as being of relevance, as of October 2026:
+
+**Global config settings**
+- copyOnSelect: prevent Claude from copying selected text to its context. I hate it when it does that.
+
+**Interface and terminal**
+- prefersReducedMotion: reduce/turn off animations
+- spinnerTipsEnabled: disable tips about Claude Code features
+- spinnerVerbs: change the verbs the spinner shows
+
+**Memory and context**
+- autoMemoryEnabled: turn autoMemory off. Necessary to isolate configuration to this repo
+- env: set environment variables for every session and subprocesses
+- fileCheckpointingEnabled: turn on file snapshots
+
+**Model and responses**
+- model: default model to start with
+- effortLevel: default effort to start with
+- outputStyle: set of instructions that sets Claude’s role, tone, and response format for every response in a session. 
+- showThinkingSummaries: see summaries of Claude’s extended thinking
+
+**Permission settings**
+- TBD
+
+**Plugins and skills**
+- disableArtifact: turn off the Artifact tool. I don't use them.
+- disableBundledSkills: disabled bundled skills. Not set, but worth knowing about.
+- disableWorkflows: turn off dynamic workflows. I don't use them.
+
+**Privacy and telemetry**
+- cleanupPeriodDays: how many days Claude keeps transcripts
+- desktopSessionCleanupPeriodDays: how many days Claude Desktop and Cowork keep transcripts
+- feedbackDrafts: whether Claude queues feedback drafts
+- feedbackSurveyRate: how often the Claude survey appears
+- skipWebFetchPreflight: skip the WebFetch hostname check when Anthropic is unreachable
