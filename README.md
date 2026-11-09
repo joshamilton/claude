@@ -50,6 +50,8 @@ The LaunchAgent config lives in this repo at `config/claudeping.plist`.
 
 A LaunchAgent only fires while the Mac is awake. A sleeping laptop will not run it and will not wake itself up on its own, so the Mac also needs a scheduled wake set a few minutes before 7am. This uses `pmset repeat wake`, which is a separate macOS setting from the LaunchAgent and needs to be set up on its own.
 
+The prompt runs from its own empty folder, `/Users/joshamilton/.local/share/claudeping`. This is necessary, because macOS does not let a background job read the `Documents` folder. A job that starts in Documents fails with `Operation not permitted`. Furthermore, Claude files every session under the folder it starts in, so that folder is also on the project allowlist (`config/project-allowlist.txt`), which keeps the daily cleanup in section 2 from deleting it. Finally, the plist also raises the number of files the job may keep open to 512. A LaunchAgent starts with a limit of 256, and Claude stops with a `low max file descriptors` error at that limit.
+
 To setup: 
 1. Confirm the Claude CLI is installed at `/Users/joshamilton/.local/bin/claude`:
     ```bash
@@ -86,7 +88,23 @@ If it is installed somewhere else, update the path in `config/claudeping.plist` 
     ```
 Logs from each run go to `/tmp/claudeping.log` (output) and `/tmp/claudeping.err` (errors).
 
-7. 24 hours after setup, check if the 7am prompt is firing:
+7. Perform a test run:
+    ```bash
+    rm -rf /tmp/claudeping.log
+    rm -rf /tmp/claudeping.err
+    launchctl kickstart -k gui/$(id -u)/claudeping
+    sleep 30
+    ```
+
+8. Check the results:
+    ```bash
+    launchctl list | grep claudeping
+    cat /tmp/claudeping.log
+    cat /tmp/claudeping.err
+    ```
+    The `launchctl list` line should show `0` in the middle column, which is the exit status of the last run. The log should hold one line of reply from Claude, and the error file should be empty.
+
+9. 24 hours after setup, check if the 7am prompt is firing:
 
     ```bash
     cat /tmp/claudeping.log
@@ -97,11 +115,11 @@ Logs from each run go to `/tmp/claudeping.log` (output) and `/tmp/claudeping.err
     Should have one line for every 7am prompt.
 
     ```bash
-    /tmp/claudeping.err
+    cat /tmp/claudeping.err
     ```
     Should be empty.
 
-8. To disable this feature, unload the LaunchAgent, remove the copy from LaunchAgents, and cancel the scheduled wake:
+10. To disable this feature, unload the LaunchAgent, remove the copy from LaunchAgents, and cancel the scheduled wake:
 
     ```bash
     launchctl unload /Users/joshamilton/Library/LaunchAgents/claudeping.plist
@@ -128,29 +146,104 @@ Regardless of the allowlist, the script also deletes these folders in their enti
     - `~/.claude/ide/`: Created when the IDE starts. Removed for same reason as `~/.claude/sessions/`
     - `~/.claude/shell-snapshots/`: Created when a session starts. Removed for same reason as `~/.claude/sessions/`
 
+This script uses a runner for security reasons. The script must delete things in folders macOS protects (e.g., `Documents`). macOS blocks background jobs from those folders unless the program has Full Disk Access. Giving Full Disk Access to `/bin/bash` would apply to every bash script on the Mac. Instead, the job starts a small program built for this one task (the runner). The runner `scripts/claude-cleanup-runner.c`  starts `/bin/bash` and calls the script, `/Users/joshamilton/.local/bin/cleanup-claude-projects.sh`. Only the runner is given Full Disk Access.
+
+The script and the allowlist also run from copies, not from this repo, because macOS also blocks the background job from reading the Documents folder. The copies are:
+
+- `/Users/joshamilton/.local/bin/claude-cleanup-runner`: the runner, built from `scripts/claude-cleanup-runner.c`
+- `/Users/joshamilton/.local/bin/cleanup-claude-projects.sh`: copy of `scripts/cleanup-claude-projects.sh`
+- `/Users/joshamilton/.local/share/claude-cleanup/project-allowlist.txt`: copy of `config/project-allowlist.txt`
+
 To setup:
 
 1. Review `config/project-allowlist.txt` and confirm the allowed folders and patterns are correct. Add a line for any new root as needed.
 
-2. Copy the plist into the LaunchAgents folder:
+2. Make sure only I can change the folders that hold the runner and the script:
+    ```bash
+    chmod go-w /Users/joshamilton/.local /Users/joshamilton/.local/share
+    ```
+
+3. Check the results:
+    ```bash
+    ls -ld /Users/joshamilton/.local /Users/joshamilton/.local/bin /Users/joshamilton/.local/share
+    ```
+    All three lines show the permissions `drwxr-xr-x`.
+
+4. Build the runner:
+    ```bash
+    clang -O2 -Wall -Wextra -o /Users/joshamilton/.local/bin/claude-cleanup-runner /Users/joshamilton/Documents/repos/claude-v2/scripts/claude-cleanup-runner.c
+    codesign -f -s - /Users/joshamilton/.local/bin/claude-cleanup-runner
+    chmod 755 /Users/joshamilton/.local/bin/claude-cleanup-runner
+    ```
+    The build should print no warnings.
+
+5. Check the results:
+    ```bash
+    codesign -dv /Users/joshamilton/.local/bin/claude-cleanup-runner 2>&1 | grep Signature
+    Signature=adhoc
+    ls -l /Users/joshamilton/.local/bin/claude-cleanup-runner
+    -rwxr-xr-x  1 joshamilton  staff  33776 Nov  8 15:59 /Users/joshamilton/.local/bin/claude-cleanup-runner
+    ```
+
+6. Give the runner Full Disk Access:
+    - Open System Settings, then Privacy & Security, then Full Disk Access.
+    - Click `+`. In the file picker, press `Cmd+Shift+G` and type `/Users/joshamilton/.local/bin/`.
+    - Choose `claude-cleanup-runner.c`, click Open, and make sure its switch is on.
+
+7. Copy the script and the allowlist into place:
+    ```bash
+    cp /Users/joshamilton/Documents/repos/claude-v2/scripts/cleanup-claude-projects.sh /Users/joshamilton/.local/bin/cleanup-claude-projects.sh
+    chmod 755 /Users/joshamilton/.local/bin/cleanup-claude-projects.sh
+    mkdir -p /Users/joshamilton/.local/share/claude-cleanup
+    cp /Users/joshamilton/Documents/repos/claude-v2/config/project-allowlist.txt /Users/joshamilton/.local/share/claude-cleanup/project-allowlist.txt
+    chmod 644 /Users/joshamilton/.local/share/claude-cleanup/project-allowlist.txt
+    ```
+
+8. Check the results. Each `diff` should print nothing, and the `echo` after it should print its message:
+    ```bash
+    diff /Users/joshamilton/Documents/repos/claude-v2/scripts/cleanup-claude-projects.sh /Users/joshamilton/.local/bin/cleanup-claude-projects.sh && echo script-copy-matches
+    script-copy-matches
+    diff /Users/joshamilton/Documents/repos/claude-v2/config/project-allowlist.txt /Users/joshamilton/.local/share/claude-cleanup/project-allowlist.txt && echo allowlist-copy-matches
+    allowlist-copy-matches
+    ```
+
+9. Copy the plist into the LaunchAgents folder:
     ```bash
     cp /Users/joshamilton/Documents/repos/claude-v2/config/claude-project-cleanup.plist /Users/joshamilton/Library/LaunchAgents/claude-project-cleanup.plist
     ```
 
-3. Load it so it starts running:
+10. Load it so it starts running:
     ```bash
     launchctl load /Users/joshamilton/Library/LaunchAgents/claude-project-cleanup.plist
     ```
 
-4. Check that it is loaded:
+11. Check that it is loaded:
     ```bash
     launchctl list | grep claude-project-cleanup
     ```
 
-5. 24 hours after setup, check if the cleanup ran:
+12. Perform a test run:
+    ```bash
+    ls ~/.claude/projects > /tmp/projects-before.txt
+    rm -rf /tmp/claude-project-cleanup.out
+    rm -rf /tmp/claude-project-cleanup.err
+    launchctl kickstart -k gui/$(id -u)/claude-project-cleanup
+    sleep 30
+    ```
+
+13. Check the results:
+    ```bash
+    launchctl list | grep claude-project-cleanup
+    cat /tmp/claude-project-cleanup.out
+    cat /tmp/claude-project-cleanup.err
+    ls ~/.claude/projects | diff /tmp/projects-before.txt - && echo projects-unchanged
+    ```
+    The `launchctl list` line should show `0` in the middle column, which is the exit status of the last run. The output should be one line such as `Removed 0 project(s) outside the allowlist and 0 on-disk .claude folder(s).` The error file should be empty. If no project is outside the allowlist, `projects-unchanged` is printed.
+
+14. 24 hours after setup, check if the cleanup ran:
     ```bash
     cat /tmp/claude-project-cleanup.out
-    Removed 1 project(s) outside the allowlist.
+    Removed 1 project(s) outside the allowlist and 0 on-disk .claude folder(s).
     ```
     Should have one line per day.
 
@@ -159,10 +252,12 @@ To setup:
     ```
     Should be empty.
 
-6. To disable this feature, unload the LaunchAgent and remove the copy from LaunchAgents:
+15. To disable this feature, unload the LaunchAgent, remove the copy from LaunchAgents, and remove the runner, the script copy and the allowlist copy. Then remove `claude-cleanup-runner` from Full Disk Access by hand in System Settings (select it in the list and click `-`):
     ```bash
     launchctl unload /Users/joshamilton/Library/LaunchAgents/claude-project-cleanup.plist
     rm /Users/joshamilton/Library/LaunchAgents/claude-project-cleanup.plist
+    rm /Users/joshamilton/.local/bin/claude-cleanup-runner /Users/joshamilton/.local/bin/cleanup-claude-projects.sh
+    rm -r /Users/joshamilton/.local/share/claude-cleanup
     ```
 
 ### 3. Symlink `settings.json`

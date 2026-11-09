@@ -11,7 +11,12 @@
         <string>/Users/joshamilton/.local/bin/claude -p "hey"</string>
     </array>
     <key>WorkingDirectory</key>
-    <string>/Users/joshamilton/Documents/repos/claude-v2</string>
+    <string>/Users/joshamilton/.local/share/claudeping</string>
+    <key>SoftResourceLimits</key>
+    <dict>
+        <key>NumberOfFiles</key>
+        <integer>512</integer>
+    </dict>
     <key>StartCalendarInterval</key>
     <dict>
         <key>Hour</key><integer>7</integer>
