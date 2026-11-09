@@ -74,7 +74,7 @@ If it is installed somewhere else, update the path in `config/claudeping.plist` 
 
 4. Copy the plist into the LaunchAgents folder:
     ```bash
-    cp /Users/joshamilton/Documents/repos/claude-v2/config/claudeping.plist /Users/joshamilton/Library/LaunchAgents/claudeping.plist
+    cp /Users/joshamilton/Documents/repos/claude/config/claudeping.plist /Users/joshamilton/Library/LaunchAgents/claudeping.plist
     ```
 
 5. Load it so it starts running:
@@ -171,7 +171,7 @@ To setup:
 
 4. Build the runner:
     ```bash
-    clang -O2 -Wall -Wextra -o /Users/joshamilton/.local/bin/claude-cleanup-runner /Users/joshamilton/Documents/repos/claude-v2/scripts/claude-cleanup-runner.c
+    clang -O2 -Wall -Wextra -o /Users/joshamilton/.local/bin/claude-cleanup-runner /Users/joshamilton/Documents/repos/claude/scripts/claude-cleanup-runner.c
     codesign -f -s - /Users/joshamilton/.local/bin/claude-cleanup-runner
     chmod 755 /Users/joshamilton/.local/bin/claude-cleanup-runner
     ```
@@ -192,24 +192,24 @@ To setup:
 
 7. Copy the script and the allowlist into place:
     ```bash
-    cp /Users/joshamilton/Documents/repos/claude-v2/scripts/cleanup-claude-projects.sh /Users/joshamilton/.local/bin/cleanup-claude-projects.sh
+    cp /Users/joshamilton/Documents/repos/claude/scripts/cleanup-claude-projects.sh /Users/joshamilton/.local/bin/cleanup-claude-projects.sh
     chmod 755 /Users/joshamilton/.local/bin/cleanup-claude-projects.sh
     mkdir -p /Users/joshamilton/.local/share/claude-cleanup
-    cp /Users/joshamilton/Documents/repos/claude-v2/config/project-allowlist.txt /Users/joshamilton/.local/share/claude-cleanup/project-allowlist.txt
+    cp /Users/joshamilton/Documents/repos/claude/config/project-allowlist.txt /Users/joshamilton/.local/share/claude-cleanup/project-allowlist.txt
     chmod 644 /Users/joshamilton/.local/share/claude-cleanup/project-allowlist.txt
     ```
 
 8. Check the results. Each `diff` should print nothing, and the `echo` after it should print its message:
     ```bash
-    diff /Users/joshamilton/Documents/repos/claude-v2/scripts/cleanup-claude-projects.sh /Users/joshamilton/.local/bin/cleanup-claude-projects.sh && echo script-copy-matches
+    diff /Users/joshamilton/Documents/repos/claude/scripts/cleanup-claude-projects.sh /Users/joshamilton/.local/bin/cleanup-claude-projects.sh && echo script-copy-matches
     script-copy-matches
-    diff /Users/joshamilton/Documents/repos/claude-v2/config/project-allowlist.txt /Users/joshamilton/.local/share/claude-cleanup/project-allowlist.txt && echo allowlist-copy-matches
+    diff /Users/joshamilton/Documents/repos/claude/config/project-allowlist.txt /Users/joshamilton/.local/share/claude-cleanup/project-allowlist.txt && echo allowlist-copy-matches
     allowlist-copy-matches
     ```
 
 9. Copy the plist into the LaunchAgents folder:
     ```bash
-    cp /Users/joshamilton/Documents/repos/claude-v2/config/claude-project-cleanup.plist /Users/joshamilton/Library/LaunchAgents/claude-project-cleanup.plist
+    cp /Users/joshamilton/Documents/repos/claude/config/claude-project-cleanup.plist /Users/joshamilton/Library/LaunchAgents/claude-project-cleanup.plist
     ```
 
 10. Load it so it starts running:
@@ -267,13 +267,13 @@ To setup:
 To setup:
 1. Symlink the repo copy into place:
     ```bash
-    ln -s /Users/joshamilton/Documents/repos/claude-v2/config/settings.json ~/.claude/settings.json
+    ln -s /Users/joshamilton/Documents/repos/claude/config/settings.json ~/.claude/settings.json
     ```
 
 2. Check that it resolved:
     ```bash
     ls -la ~/.claude/settings.json
-    /Users/joshamilton/.claude/settings.json -> /Users/joshamilton/Documents/repos/claude-v2/config/settings.json
+    /Users/joshamilton/.claude/settings.json -> /Users/joshamilton/Documents/repos/claude/config/settings.json
     ```
 
 ### 4. Set the spinner word in the VS Code panel

@@ -1,7 +1,7 @@
 #!/bin/bash
 set -uo pipefail
 
-REPO_DIR="/Users/joshamilton/Documents/repos/claude-v2"
+REPO_DIR="/Users/joshamilton/Documents/repos/claude"
 ALLOWLIST_FILE="$REPO_DIR/config/project-allowlist.txt"
 LOG_DIR="$REPO_DIR/logs"
 
