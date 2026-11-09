@@ -276,6 +276,27 @@ To setup:
     /Users/joshamilton/.claude/settings.json -> /Users/joshamilton/Documents/repos/claude-v2/config/settings.json
     ```
 
+### 4. Set the spinner word in the VS Code panel
+
+`spinnerVerbs` in `config/settings.json` changes the spinner word in the terminal only. The Claude Code panel in VS Code draws its own spinner and reads its own VS Code setting, `claudeCode.spinnerVerbs`. This setting has to be set by hand.
+
+To setup:
+1. Open the VS Code user settings file: press `Cmd+Shift+P`, then choose `Preferences: Open User Settings (JSON)`.
+
+2. Add this entry inside the top-level braces:
+    ```json
+    "claudeCode.spinnerVerbs": {
+        "mode": "replace",
+        "verbs": [
+            "Working"
+        ]
+    },
+    ```
+
+3. Save the file.
+
+4. Check the results: send any prompt in the Claude Code panel. The spinner should say `Working`.
+
 ## About Claude:
 
 ### The `~/.claude` folder
@@ -341,7 +362,7 @@ Claude settings are documented here: [Settings](https://code.claude.com/docs/en/
 **Interface and terminal**
 - prefersReducedMotion: reduce/turn off animations
 - spinnerTipsEnabled: disable tips about Claude Code features
-- spinnerVerbs: change the verbs the spinner shows
+- spinnerVerbs: change the verbs the spinner shows. This works in the terminal only. The VS Code panel ignores it and has its own setting (see section 4 of Setup).
 
 **Memory and context**
 - autoMemoryEnabled: turn autoMemory off. Necessary to isolate configuration to this repo
