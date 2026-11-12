@@ -1,0 +1,11 @@
+name: [project-name]
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - [primary-tool]=[version]
+  - [dependency]
+  - [dependency]
+  - pip
+  - pip:
+    - [pip-only-package]

@@ -1,0 +1,21 @@
+# macOS
+.DS_Store
+._*
+
+# Office lock files (Excel, Word)
+~$*
+
+# Editors and AI tools
+.claude/
+.cursor/
+.vscode/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Input and output folders
+*.log
+data/
+logs/
+results/
+work/
