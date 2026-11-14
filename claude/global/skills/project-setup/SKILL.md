@@ -11,11 +11,16 @@ These conventions apply to every new project, whatever the language. Follow the 
 
 1. Confirm `[project-name]` with the user if the folder name is unclear. Compute `[project_name]` and `[YEAR]` (see "Placeholders").
 
-2. Read the language or pipeline skills that apply (`python`, `nextflow`, etc, and the client-specific language skill). It gives `[env-dir]`, the primary tool and its version, the extra dependencies, the folders and files to create, and the `.gitignore` entries to append.
+2. Read the language or pipeline skills that apply (`python`, `nextflow`, etc), and the client-specific language skill. They give:
+    - `[env-dir]`
+    - the primary tool and its version
+    - the extra dependencies
+    - the folders and files to create
+    - the `.gitignore` entries to append
 
 3. Find the contact block (see "Placeholders").
 
-4. Create the folders in which setup also creates a file: `[env-dir]/` and any code folder the language skills name (for example `src/`). Create no other folder. Other folders are created when they are first needed (see "Folders").
+4. Create the folders in which setup also creates a file: `[env-dir]/` and any code folder the language skills name (for example `src/`). Other folders are created when they are first needed (see "Folders").
 
 5. Copy `assets/environment.yml` to `[env-dir]/[project-name].yml`. Fill in the name, the primary tool with its version, and the dependencies the language skills name. Pin only the primary tool (see "Environment yml").
 
@@ -50,7 +55,7 @@ Every project has an environment yml named after the project. The folder it live
 
 1. Pin the primary tool or language version when the yml is created (for example `python=3.11`, or `nextflow=25.10.4`).
 
-2. Do not pin any other package when the yml is created. A complex environment may not resolve with versions chosen in advance.
+2. Leave every other package unpinned when the yml is created. A complex environment may not resolve with versions chosen in advance.
 
 3. After `mamba env create` succeeds, read the installed versions with `mamba list -n [project-name]` and write them into the yml as `package=version`.
 
@@ -68,11 +73,11 @@ Start from `assets/environment.yml`.
 
 ## .gitignore
 
-Every project needs a `.gitignore`. Copy `assets/gitignore` to `.gitignore` at the project root, then append the `.gitignore` entries from each language skill that applies to the project (for example the Python entries, the Nextflow entries, the R entries). Client skills do not repeat these entries.
+Every project needs a `.gitignore`. Copy `assets/gitignore` to `.gitignore` at the project root, then append the `.gitignore` entries from each language skill that applies to the project (for example the Python entries, the Nextflow entries, the R entries).
 
 ## Folders
 
-Setup creates only the folders listed in step 4 of the setup procedure. Create each folder below when the project first needs it.
+Setup creates the folders listed in step 4 of the setup procedure. Create each folder below when the project first needs it.
 
 - `assets/` — supporting files that are not code, config, or output: reference sequences, databases, samplesheets, schema files, small test files. Tracked by git.
 
@@ -88,4 +93,4 @@ Output folders:
 
 - Multi-step outputs use numbered prefixes in execution order: `01_<step>/`, `02_<step>/`, and so on (for example `results/01_fastqc/`, or `${outdir}/01_FASTQC/` in a Nextflow `publishDir`).
 
-- Single-step outputs use a descriptive, lowercase, underscore-separated name instead.
+- Single-step outputs use a descriptive, lowercase, underscore-separated name.

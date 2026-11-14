@@ -2,7 +2,7 @@
 Copyright (c) 2026, Joshua J. Hamilton  
 Email: <joshamilton@gmail.com>  
 URL: <https://www.linkedin.com/in/joshamilton/>  
-URL: <https://github.com/joshamilton/claude>
+URL: <https://github.com/joshamilton/claude>  
 All rights reserved.
 
 ## Overview
@@ -39,6 +39,42 @@ This repo contains ... [TBD]
 ### Consulting Projects:  ~/Documents/Employment/
 
 Each client gets its own folder of the form `YYYY-<client>`. Completed projects are stored in `~/Documents/Employment/_Archives`
+
+## Guidelines for skills
+
+1. A skill folder holds `SKILL.md`, then:
+    - `references/` for documentation that Claude reads when needed
+    - `assets/` for templates
+
+In my setup, files with the same role have the same name in every skill:
+    - `references/setup.md`: initial setup
+    - `references/coding.md`: code conventions
+    - `references/workflow.md`: how to perform a task
+Other files are named for their topic.
+
+2. Each skill gets a description. The description says what the skill does and when Claude should load it. Skills:
+    - are written in third person
+    - start with "Use when ..."
+    - describe what the skill does
+    - provide a short description of the capabilities.
+The general format is:
+```
+[When to use it] + [What it does] + [Key capabilities]
+```
+
+4. Keep `SKILL.md` short, under 500 lines. Put details that are rarely needed in a file in `references/`, referenced by the parent `SKILL.md`. Put template files in `assets/`.
+
+5. Ensure that skill names do not conflict with other existing skills, including Anthropic skills. To avoid this, prepend skill names with the client (e.g., `<client>-python`) or a short description (e.g., `extend-docx` extends the Anthrophic `docx` skill).
+
+6. A guideline lives in one skill only. If a guideline is true for every project of a kind, it goes in the most general skill (e.g., in the `global` folder).
+
+7. Skills may cite other skills. If a skill is designed to extend an [Antrophic skill](https://code.claude.com/docs/en/skills), the skill should say so. For example, the skill should say "this skill extends the guidance in the Anthropic skill named `<name>`.
+
+8. A skill may also cite a section of the global `CLAUDE.md` by name, for example "Voice and Style".
+
+10. A client skill names the client and the kind of project in its description (for example, "Use when working in a <client> Nextflow pipeline"), so that it loads next to the general skill. Its body holds only what is specific for that client.
+
+11. When a skill is renamed or a file is moved, search the repo for the old name and fix every reference in the same change.
 
 ## Setup
 

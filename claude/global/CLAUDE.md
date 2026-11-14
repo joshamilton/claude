@@ -99,7 +99,7 @@ Plans are self-contained and readable alone. Embed the requirements inside the d
 - Adhere to the existing coding style, patterns, and conventions in the project
 - For Python projects, follow the `python` skill.
 - For R-markdown projects, follow the `r-markdown` skill.
-- For Nextflow pipelines, follow the `nf-core` skill and the client's own `-nextflow` skill.
+- For Nextflow pipelines, follow the `nextflow` skill and the client's own `<client>-nextflow` skill.
 
 ### Testing and Feedback
 
