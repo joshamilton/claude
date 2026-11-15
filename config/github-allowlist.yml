@@ -1,0 +1,18 @@
+# Paths that go into the public copy of this repo.
+# A folder name includes everything below it.
+# Anything not listed stays private.
+# For directories that contain client secrets (config, claude/trophicnexus), list all allowed files.
+paths:
+  - README.md
+  - .gitignore
+  - config/claude-project-cleanup.plist
+  - config/claude.yml
+  - config/claudeping.plist
+  - config/github-allowlist.yml
+  - config/project-allowlist.txt
+  - config/settings.json
+  - scripts
+  - claude/global
+  - claude/joshamilton
+  - claude/trophicnexus/CLAUDE.md
+  - claude/trophicnexus/TEMPLATE-client-CLAUDE.md

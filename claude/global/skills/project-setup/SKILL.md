@@ -57,7 +57,7 @@ Every project has an environment yml named after the project. The folder it live
 
 2. Leave every other package unpinned when the yml is created. A complex environment may not resolve with versions chosen in advance.
 
-3. After `mamba env create` succeeds, read the installed versions with `mamba list -n [project-name]` and write them into the yml as `package=version`.
+3. After `mamba env create` succeeds, read the installed versions with `mamba list -n [project-name]` and write them into the yml as `package=version`. The lines of `mamba list` start with spaces, so match with `grep -E "^ *package "`, not `"^package "`.
 
 4. When a new package is needed later, add it to the yml unpinned, run `mamba env update -f [env-dir]/[project-name].yml`, and pin its version once the update succeeds.
 

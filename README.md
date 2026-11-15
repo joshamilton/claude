@@ -11,7 +11,7 @@ This repo describes how I configure and use Claude. I use Claude both for person
 
 This repo contains ... [TBD]
 
-## How I Use Claude
+### How I Use Claude
 
 1. I use Claude via a consumer plan (Pro / Max) and do not allow the use of chats and coding sessions to train my models (https://claude.ai/settings/data-privacy-controls).
 
@@ -32,49 +32,13 @@ This repo contains ... [TBD]
 
 9. Do not use MEMORY.md (`autoMemoryEnabled: false`). Instead, I instruct Claude to create or update CLAUDE.md or SKILLS.md files instead. This provides visibility and control.
 
-## Where I use Claude
+### Where I use Claude
 
-### Personal Project: ~/Documents/repos
+#### Personal Projects: ~/Documents/repos
 
-### Consulting Projects:  ~/Documents/Employment/
+#### Consulting Projects:  ~/Documents/Employment/
 
 Each client gets its own folder of the form `YYYY-<client>`. Completed projects are stored in `~/Documents/Employment/_Archives`
-
-## Guidelines for skills
-
-1. A skill folder holds `SKILL.md`, then:
-    - `references/` for documentation that Claude reads when needed
-    - `assets/` for templates
-
-In my setup, files with the same role have the same name in every skill:
-    - `references/setup.md`: initial setup
-    - `references/coding.md`: code conventions
-    - `references/workflow.md`: how to perform a task
-Other files are named for their topic.
-
-2. Each skill gets a description. The description says what the skill does and when Claude should load it. Skills:
-    - are written in third person
-    - start with "Use when ..."
-    - describe what the skill does
-    - provide a short description of the capabilities.
-The general format is:
-```
-[When to use it] + [What it does] + [Key capabilities]
-```
-
-4. Keep `SKILL.md` short, under 500 lines. Put details that are rarely needed in a file in `references/`, referenced by the parent `SKILL.md`. Put template files in `assets/`.
-
-5. Ensure that skill names do not conflict with other existing skills, including Anthropic skills. To avoid this, prepend skill names with the client (e.g., `<client>-python`) or a short description (e.g., `extend-docx` extends the Anthrophic `docx` skill).
-
-6. A guideline lives in one skill only. If a guideline is true for every project of a kind, it goes in the most general skill (e.g., in the `global` folder).
-
-7. Skills may cite other skills. If a skill is designed to extend an [Antrophic skill](https://code.claude.com/docs/en/skills), the skill should say so. For example, the skill should say "this skill extends the guidance in the Anthropic skill named `<name>`.
-
-8. A skill may also cite a section of the global `CLAUDE.md` by name, for example "Voice and Style".
-
-10. A client skill names the client and the kind of project in its description (for example, "Use when working in a <client> Nextflow pipeline"), so that it loads next to the general skill. Its body holds only what is specific for that client.
-
-11. When a skill is renamed or a file is moved, search the repo for the old name and fix every reference in the same change.
 
 ## Setup
 
@@ -332,6 +296,80 @@ To setup:
 3. Save the file.
 
 4. Check the results: send any prompt in the Claude Code panel. The spinner should say `Working`.
+
+## Development 
+
+### Guidelines for skills
+
+1. A skill folder holds `SKILL.md`, then:
+    - `references/` for documentation that Claude reads when needed
+    - `assets/` for templates
+
+In my setup, files with the same role have the same name in every skill:
+    - `references/setup.md`: initial setup
+    - `references/coding.md`: code conventions
+    - `references/workflow.md`: how to perform a task
+Other files are named for their topic.
+
+2. Each skill gets a description. The description says what the skill does and when Claude should load it. Skills:
+    - are written in third person
+    - start with "Use when ..."
+    - describe what the skill does
+    - provide a short description of the capabilities.
+The general format is:
+```
+[When to use it] + [What it does] + [Key capabilities]
+```
+
+4. Keep `SKILL.md` short, under 500 lines. Put details that are rarely needed in a file in `references/`, referenced by the parent `SKILL.md`. Put template files in `assets/`.
+
+5. Ensure that skill names do not conflict with other existing skills, including Anthropic skills. To avoid this, prepend skill names with the client (e.g., `<client>-python`) or a short description (e.g., `extend-docx` extends the Anthrophic `docx` skill).
+
+6. A guideline lives in one skill only. If a guideline is true for every project of a kind, it goes in the most general skill (e.g., in the `global` folder).
+
+7. Skills may cite other skills. If a skill is designed to extend an [Antrophic skill](https://code.claude.com/docs/en/skills), the skill should say so. For example, the skill should say "this skill extends the guidance in the Anthropic skill named `<name>`.
+
+8. A skill may also cite a section of the global `CLAUDE.md` by name, for example "Voice and Style".
+
+10. A client skill names the client and the kind of project in its description (for example, "Use when working in a <client> Nextflow pipeline"), so that it loads next to the general skill. Its body holds only what is specific for that client.
+
+11. When a skill is renamed or a file is moved, search the repo for the old name and fix every reference in the same change.
+
+
+### Publishing this repo
+
+This repo contains private client secrets that should never be published. To prevent their publication, a redacted version of the repo is built and pushed to GitHub by the script `scripts/make_public_mirror.py`.
+
+How the script works:
+
+1. It clones the commit history into `../claude-public`.
+
+2. It runs `git-filter-repo` so that only the allowed paths (`config/github-allowlist.yml`) remain in every commit. Commits keep their message, date and author.
+
+3. It scans the commit history of the copy for the names in `config/github-blocklist.yml`, ignoring case. A name matches as plain text anywhere, so `fooBar`, `foo_bar` and `FOO` all match `foo`. The blocklist is committed in this repo, but it is not on the allowlist, so it is never part of the copy.
+
+4. If a name is found, the copy is deleted and the script stops. The matching lines are shown for review. If a match is an ordinary word (example: the name `foo` matches the word `foobar`), add that word to `exceptions` in the blocklist.
+
+5. It sets the remote `origin` to `git@joshamilton-github.com:joshamilton/claude.git`, but does not push.
+
+#### Setup:
+
+Create the environment and check it:
+
+```bash
+mamba env create -f config/claude.yml
+mamba run -n claude git filter-repo --version
+```
+
+#### Usage:
+
+Run the script:
+
+```bash
+mamba run -n claude python scripts/make_public_mirror.py
+cd ../claude-public
+git push -u origin main
+```
 
 ## About Claude:
 
