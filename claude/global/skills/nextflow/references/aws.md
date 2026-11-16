@@ -9,7 +9,7 @@ Two parts follow the placeholder table:
 
 ## Placeholders
 
-The values are identifiers, not credentials. They come from the identity table in the client `CLAUDE.md`. Never put a credential, key, or token in a skill or in a repository file.
+The values are identifiers, not credentials. They come from the cloud table in the client `CLAUDE.md`. Never put a credential, key, or token in a skill or in a repository file.
 
 Cloud values are of two kinds:
 
@@ -84,6 +84,24 @@ The `batch` profile, in the `profiles` block:
 ```
 
 `cliPath` is the location of the AWS CLI in the custom AMI that the compute environment uses. Every client's AMI installs it at `/home/ec2-user/miniconda/bin/aws`. See `aws.batch.cliPath` in the Nextflow AWS Batch documentation (https://docs.seqera.io/nextflow/reference/executor/aws-batch).
+
+The `seqera` profile, after `batch`, only for a pipeline that runs on Seqera Platform:
+
+```groovy
+    seqera {
+        docker.enabled = null
+        aws = null
+        aws {
+            batch {
+                maxSpotAttempts = 3
+            }
+        }
+        params {
+            aws_profile = null
+            aws_queue  = null
+        }
+    }
+```
 
 The `local` profile reads S3 data through the same AWS settings, so it has this block:
 
@@ -204,6 +222,14 @@ AWS head node. This is the EC2 instance that starts production runs. It uses its
 ### Usage
 
 Paste after the explicit local example.
+
+For a pipeline that runs on Seqera Platform, put this subsection in Usage, before the AWS Batch run command:
+
+````markdown
+### Running the pipeline in production via Seqera Platform
+
+[Usage instructions]
+````
 
 Run in production through AWS Batch, from the head node. The head node's instance profile supplies the credentials, so `--aws_profile` is not needed. `--aws_account_id` is needed only when the pipeline has custom container images:
 

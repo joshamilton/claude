@@ -1,6 +1,6 @@
 # Container strategies for Nextflow pipelines
 
-A client chooses one of two strategies, or combines them. The client skill says which strategy it uses.
+A pipeline uses one of two strategies, or combines them. Any client can use any strategy. The pipeline's own `nextflow.config` shows which one it uses. For a new pipeline, ask the user.
 
 - Strategy A: community or Wave images, pinned per process in `conf/containers_*.config`.
 - Strategy B: custom images in a cloud registry, named in `params.containers` in `conf/modules.config`.
@@ -22,7 +22,7 @@ Files:
 - `conf/containers_docker_arm64.config` — local runs on Apple Silicon. Use arm64-native digests where they exist.
 - `conf/containers_wave_arch_arm64.config` — included from the `local` profile on arm64 only. It sets `arch = 'arm64'` for processes that use native arm64 images. Other processes default to amd64 emulation.
 
-Wiring in the `local` profile of `nextflow.config`:
+Wiring in the `local` profile of `nextflow.config`. With strategy B only, the `local` profile has no `includeConfig` statements for container files, and `process.arch` is not set:
 
 ```groovy
         includeConfig (System.getProperty('os.arch') in ['aarch64', 'arm64'])
@@ -136,7 +136,7 @@ Give the script the registry values as command-line options, never as fixed text
 
 ## README text
 
-For the Docker Containers subsection of Deployment. Use the version for the client's strategy. If the pipeline combines both, use both paragraphs.
+For the Docker Containers subsection of Deployment. Use the version for the pipeline's strategy. If the pipeline combines both, use both paragraphs.
 
 Strategy A:
 

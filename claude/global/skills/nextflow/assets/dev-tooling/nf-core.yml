@@ -1,0 +1,24 @@
+repository_type: pipeline
+nf_core_version: '4.0.0'
+
+template:
+  org: [org]
+  name: [project-name]
+
+lint:
+  actions_ci: false
+  actions_nf_test: false
+  nf_test_content: false
+  readme: false
+  pipeline_name_conventions: false
+  rocrate_readme_sync: false
+  files_exist: false
+  files_unchanged: false
+  schema_params: false
+  nextflow_config: false
+  container_configs: false
+  multiqc_config:
+    - report_comment
+    - show_analysis_paths
+    - show_analysis_time
+    - report_section_order

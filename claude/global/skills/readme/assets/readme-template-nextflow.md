@@ -104,13 +104,18 @@ Key output files:
 The pipeline requires the following inputs:
 
 1. Samplesheet: a CSV file with sample metadata and file paths. It has these columns:
-   - `[column]` ([required or optional]): [description]
+   - `sample` (required): Unique sample identifier.
+   - `fastq_1` (required): Path to forward (R1) reads in gzipped FASTQ format. A local path or a cloud path (for example `[cloud path to a FASTQ file]`).
+   - `fastq_2` (optional): Path to reverse (R2) reads in gzipped FASTQ format. A local path or a cloud path.
+   - [Any other columns: `column` ([required or optional]): description.]
 2. [Reference files, databases, or other required inputs. Give the parameter name, the format, and the validation rules.]
 
 At startup, the pipeline checks the inputs before any process runs:
 
-- [Rule, for example: the header must include the required columns]
-- [Rule, for example: `sample` identifiers must be unique across the file]
+- The header must include the required columns.
+- Each row must have a value in every required column.
+- `sample` identifiers must be unique across the file.
+- [Any other rule.]
 
 ### Parameters
 
@@ -150,12 +155,14 @@ For deploying and running the pipeline, you need:
 | `actions_nf_test: false` | GitHub workflow for nf-test | nf-test runs in pre-commit, not on GitHub CI |
 | `nf_test_content: false` | nf-core conventions | Custom layout: path-gated nf-core tests, explicit nf-test paths, no template testdata base paths |
 | `readme: false` | README badges and Zenodo DOI placeholders | Custom README |
+| `pipeline_name_conventions: false` | pipeline name follows nf-core naming rules | Client pipeline, not an nf-core community pipeline |
 | `rocrate_readme_sync: false` | RO-Crate metadata | No RO-Crate metadata file |
 | `files_exist: false` | required template files present | Minimal layout with many template paths intentionally omitted |
 | `files_unchanged: false` | template files unmodified from `nf-core pipelines create` output | Workflows and assets deliberately customized |
 | `schema_params: false` | every flat param from `nextflow config` appears in `nextflow_schema.json` | Params typed in workflow config; not all visible to `nextflow config` |
 | `nextflow_config: false` | required config keys in `nextflow.config` only | No nf-core `custom_config_base` |
 | `container_configs: false` | container config layout | Custom `conf/containers_*.config` layout |
+| `multiqc_config.report_comment` | HTML links to nf-core GitHub and docs URLs | `report_comment` links to the pipeline's own GitHub repository |
 | `multiqc_config.show_analysis_paths` | MultiQC config option | Disabled in report output by design |
 | `multiqc_config.show_analysis_time` | MultiQC config option | Disabled in report output by design |
 | `multiqc_config.report_section_order` | MultiQC config option | Custom section order in `assets/multiqc_config.yml` |

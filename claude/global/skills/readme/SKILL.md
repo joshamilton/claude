@@ -38,7 +38,7 @@ For a new project, the `project-setup` skill runs first and calls this skill to 
 
 5. In Installation, replace `[env-dir]` with the folder that holds the environment yml.
 
-6. For a pipeline, find the client's cloud (AWS or GCP) and container strategy in the client skill. If the client skill does not say, ask the user. Read the cloud file and `containers.md` in the `references/` folder of the `nextflow` skill, and paste their sections into the bracketed template lines that begin with "Cloud:" or that point to `containers.md`. Fill in the cloud placeholders from the identity table in the client `CLAUDE.md`. Add the sections and rows that the client skill asks for.
+6. For a pipeline, find the client's cloud (AWS or GCP) in the cloud table of the client `CLAUDE.md`, and the pipeline's container strategy in its `nextflow.config`. If either is not recorded, ask the user. Read the cloud file and `containers.md` in the `references/` folder of the `nextflow` skill, and paste their sections into the bracketed template lines that begin with "Cloud:" or that point to `containers.md`. Fill in the cloud placeholders from the cloud table in the client `CLAUDE.md`. Add the sections and rows that the client skill asks for.
 
 7. In Repo structure, list the files and folders that exist now. Add to the tree as more are created.
 

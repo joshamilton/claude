@@ -1,0 +1,50 @@
+nextflow_pipeline {
+
+    name "Test pipeline default local"
+    script "../main.nf"
+    tag "pipeline"
+    tag "pipeline_default_local"
+
+    // Mirrors production local invocation:
+    //   nextflow run main.nf -profile local --outdir <OUTDIR> \
+    //     --input assets/samplesheet_test_local.csv --reference_database assets/reference_database
+
+    test("-profile local default local") {
+
+        when {
+            params {
+                input               = "${projectDir}/assets/samplesheet_test_local.csv"
+                reference_database  = "${projectDir}/assets/reference_database"
+                outdir              = "$outputDir"
+                trace_report_suffix = 'nf-test'
+                validate_params     = false
+            }
+        }
+
+        then {
+            def listOutputDirs = { outdir ->
+                def base = new File(outdir.toString())
+                def dirs = [] as SortedSet
+                base.eachFileRecurse { f ->
+                    if (!f.directory) {
+                        return
+                    }
+                    def rel = base.toPath().relativize(f.toPath()).toString()
+                    if (rel && !rel.startsWith('logs')) {
+                        dirs << rel
+                    }
+                }
+                dirs as List
+            }
+
+            def output_dirs = listOutputDirs(params.outdir)
+
+            assert workflow.success
+            assertAll(
+                // Add assertions for key output files
+                { assert snapshot(output_dirs).match() },
+            )
+        }
+    }
+
+}

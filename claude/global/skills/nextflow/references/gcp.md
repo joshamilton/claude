@@ -2,14 +2,17 @@
 
 Use this file for a pipeline that runs on Google Cloud: production runs go through Google Batch with data in Google Cloud Storage, and development runs use local Docker. Every pipeline on GCP uses the same settings and README text. Only the placeholder values differ from client to client.
 
-Two parts follow the placeholder table:
+Three parts follow the placeholder table:
 
 - "Pipeline settings" holds the GCP parts of `nextflow.config`.
+
+- "GitHub Actions CI access setup" holds the `gcloud` commands that verify or create the access that GitHub Actions needs.
+
 - "README text" holds the sections that fill the bracketed lines that begin with "Cloud:" in the Nextflow README template of the `readme` skill.
 
 ## Placeholders
 
-The values are identifiers, not credentials. They come from the identity table in the client `CLAUDE.md`. Never put a credential, key, or token in a skill or in a repository file.
+The values are identifiers, not credentials. They come from the cloud table in the client `CLAUDE.md`. Never put a credential, key, or token in a skill or in a repository file.
 
 Cloud values are of two kinds:
 
@@ -34,6 +37,7 @@ GCP has no job queue to choose, because Google Batch schedules the jobs, so it h
 | `[gcp-test-bucket]` | Bucket with test fixtures, with the `gs://` prefix |
 | `[gcp-ci-service-account]` | Service account that GitHub Actions impersonates |
 | `[gcp-wif-provider]` | Resource name of the workload identity provider |
+| `[github-owner]` | GitHub account that owns the repositories, which scopes the WIF access (see "Placeholders for Nextflow files" in `setup.md`) |
 | `[gcp-repository]` | Artifact Registry repository for custom container images (the `--repo` value of `docker/build.sh`; the project name by default) |
 | `[gcp-registry-path]` | Artifact Registry address for custom container images: `[gcp-region]-docker.pkg.dev/[gcp-project]/[gcp-repository]` |
 
@@ -117,6 +121,155 @@ The `local` profile needs no GCP block. Nextflow reads `gs://` paths through App
 The custom-image registry path for Artifact Registry is built from `gcp_project` and `gcp_location`. See `containers.md` in this folder.
 
 The `local` and `googlebatch` profiles need no Artifact Registry block. The images are named in `conf/modules.config`.
+
+## GitHub Actions CI access setup
+
+GitHub Actions impersonates the CI service account `[gcp-ci-service-account]` through workload identity federation (WIF), and Nextflow on the runner uses that identity to submit Batch jobs. Batch tasks still run as `[gcp-batch-service-account]`. WIF is scoped to the GitHub account that owns the repository (`repository_owner` in the OIDC token), not to a single repository. Any repository under that account can reuse the same provider and CI service account.
+
+The project-level setup below is done once for a GCP project and is shared by all of a client's pipelines. For a new repository, run the checks first, create only what is missing, and then set the two repository secrets. The per-repository files (workflow and samplesheet) are in "Testing" below.
+
+Requirements: the `gcloud` CLI, with permission to inspect IAM (and to change IAM only if something is missing). `[github-owner]` is the GitHub account that owns the repositories. Set these variables from the client's cloud table:
+
+```bash
+PROJECT_ID=[gcp-project]
+CI_SA=[gcp-ci-service-account]
+WORKER_SA=[gcp-batch-service-account]
+WIF_PROVIDER=[gcp-wif-provider]
+GITHUB_OWNER=[github-owner]
+SCRATCH=[gcp-scratch-bucket]
+TEST_BUCKET=[gcp-test-bucket]
+REFERENCE_BUCKET=[gcp-reference-bucket]
+
+# Derived from the values above
+CI_SA_NAME=${CI_SA%%@*}
+PROVIDER_ID=${WIF_PROVIDER##*/}
+POOL_ID=$(echo "$WIF_PROVIDER" | sed 's#.*/workloadIdentityPools/\([^/]*\)/providers/.*#\1#')
+```
+
+### Verify the project-level setup
+
+Run these checks before creating anything. If all pass, skip to "Add the repository secrets".
+
+```bash
+# CI service account exists
+gcloud iam service-accounts describe "$CI_SA" --project="$PROJECT_ID"
+
+# WIF pool and provider exist
+gcloud iam workload-identity-pools describe "$POOL_ID" \
+  --project="$PROJECT_ID" --location=global
+gcloud iam workload-identity-pools providers describe "$PROVIDER_ID" \
+  --project="$PROJECT_ID" --location=global \
+  --workload-identity-pool="$POOL_ID"
+
+# CI service account has workloadIdentityUser for the GitHub owner
+gcloud iam service-accounts get-iam-policy "$CI_SA" --project="$PROJECT_ID" \
+  --format=json | grep -q "attribute.repository_owner/${GITHUB_OWNER}" && echo "WIF binding OK"
+
+# Project-level Batch role
+gcloud projects get-iam-policy "$PROJECT_ID" --format=json \
+  | grep -A2 "$CI_SA" | grep -q batch.jobsEditor && echo "batch.jobsEditor OK"
+
+# Managed folder for CI outputs
+gcloud storage managed-folders get-iam-policy "$SCRATCH/ci/" \
+  --project="$PROJECT_ID" --format=json \
+  | grep -q "$CI_SA" && echo "ci/ managed folder IAM OK"
+
+# Read access on the test and reference buckets
+gcloud storage buckets get-iam-policy "$TEST_BUCKET" --project="$PROJECT_ID" \
+  --format=json | grep -q "$CI_SA" && echo "test bucket read OK"
+gcloud storage buckets get-iam-policy "$REFERENCE_BUCKET" --project="$PROJECT_ID" \
+  --format=json | grep -q "$CI_SA" && echo "reference bucket read OK"
+
+# CI service account can impersonate the Batch worker service account
+gcloud iam service-accounts get-iam-policy "$WORKER_SA" --project="$PROJECT_ID" \
+  --format=json | grep -q "$CI_SA" && echo "serviceAccountUser OK"
+```
+
+If a check fails, apply only the matching create step below. Do not re-run bindings that already exist unless IAM is wrong (a duplicate binding is harmless but noisy).
+
+### Create only if missing: CI service account
+
+```bash
+gcloud iam service-accounts describe "$CI_SA" --project="$PROJECT_ID" 2>/dev/null || \
+gcloud iam service-accounts create "$CI_SA_NAME" \
+  --project="$PROJECT_ID" \
+  --display-name="GitHub Actions CI"
+```
+
+### Create only if missing: IAM roles on the CI service account
+
+```bash
+gcloud projects add-iam-policy-binding "$PROJECT_ID" \
+  --member="serviceAccount:${CI_SA}" \
+  --role="roles/batch.jobsEditor"
+
+gcloud storage managed-folders create "$SCRATCH/ci/" \
+  --project="$PROJECT_ID" 2>/dev/null || true
+
+gcloud storage managed-folders add-iam-policy-binding "$SCRATCH/ci/" \
+  --project="$PROJECT_ID" \
+  --member="serviceAccount:${CI_SA}" \
+  --role="roles/storage.objectAdmin"
+
+gcloud storage buckets add-iam-policy-binding "$TEST_BUCKET" \
+  --project="$PROJECT_ID" \
+  --member="serviceAccount:${CI_SA}" \
+  --role="roles/storage.objectViewer"
+
+gcloud storage buckets add-iam-policy-binding "$REFERENCE_BUCKET" \
+  --project="$PROJECT_ID" \
+  --member="serviceAccount:${CI_SA}" \
+  --role="roles/storage.objectViewer"
+
+gcloud iam service-accounts add-iam-policy-binding "$WORKER_SA" \
+  --project="$PROJECT_ID" \
+  --member="serviceAccount:${CI_SA}" \
+  --role="roles/iam.serviceAccountUser"
+```
+
+Use a managed folder on `[gcp-scratch-bucket]/ci/` (not a bucket-level conditional on `objects/ci/`) so nf-schema can list the output directory. Optionally, add a lifecycle rule on that folder to delete objects older than a set number of days.
+
+### Create only if missing: WIF pool and provider
+
+```bash
+gcloud iam workload-identity-pools describe "$POOL_ID" \
+  --project="$PROJECT_ID" --location=global 2>/dev/null || \
+gcloud iam workload-identity-pools create "$POOL_ID" \
+  --project="$PROJECT_ID" \
+  --location=global \
+  --display-name="GitHub Actions"
+
+gcloud iam workload-identity-pools providers describe "$PROVIDER_ID" \
+  --project="$PROJECT_ID" --location=global \
+  --workload-identity-pool="$POOL_ID" 2>/dev/null || \
+gcloud iam workload-identity-pools providers create-oidc "$PROVIDER_ID" \
+  --project="$PROJECT_ID" \
+  --location=global \
+  --workload-identity-pool="$POOL_ID" \
+  --display-name="GitHub" \
+  --attribute-mapping="google.subject=assertion.sub,attribute.actor=assertion.actor,attribute.repository=assertion.repository,attribute.repository_owner=assertion.repository_owner" \
+  --attribute-condition="assertion.repository_owner=='${GITHUB_OWNER}'" \
+  --issuer-uri="https://token.actions.githubusercontent.com"
+```
+
+If the provider exists but its `attribute-condition` names a single repository, update it with `gcloud iam workload-identity-pools providers update-oidc` instead of recreating the pool.
+
+### Create only if missing: WIF binding on the CI service account
+
+```bash
+PROJECT_NUMBER=$(gcloud projects describe "$PROJECT_ID" --format='value(projectNumber)')
+
+gcloud iam service-accounts add-iam-policy-binding "$CI_SA" \
+  --project="$PROJECT_ID" \
+  --role="roles/iam.workloadIdentityUser" \
+  --member="principalSet://iam.googleapis.com/projects/${PROJECT_NUMBER}/locations/global/workloadIdentityPools/${POOL_ID}/attribute.repository_owner/${GITHUB_OWNER}"
+```
+
+Skip this step if the binding already appears in `gcloud iam service-accounts get-iam-policy "$CI_SA"`.
+
+### Add the repository secrets
+
+Set the two secrets from the table in "Testing" on each repository that runs GCP CI (Settings, Secrets and variables, Actions, New repository secret), or once as organization secrets if the repositories belong to a GitHub organization. The provider name contains the project number: replace it if `gcloud projects describe "$PROJECT_ID"` returns a different one. Confirm the secrets with `gh secret list`.
 
 ## README text
 
@@ -272,7 +425,7 @@ Cloud resources, for the Cloud resources subsection:
 
 ### Development Guidelines
 
-Rows to add to the nf-core lint disables table:
+Add `actions_awstest: false` and `actions_awsfulltest: false` to the `lint` section of `.nf-core.yml`, and these rows to the nf-core lint disables table:
 
 | Flag | nf-core check | Why disabled |
 | ---- | ------------- | ------------ |
@@ -280,6 +433,12 @@ Rows to add to the nf-core lint disables table:
 | `actions_awsfulltest: false` | GitHub workflow for full AWS test | No AWS; pipeline runs on GCP |
 
 ### Testing
+
+Files to create:
+
+- Copy `assets/gcp-integration-test.yml` to `.github/workflows/gcp-integration-test.yml`. Fill in the placeholders, and add the pipeline's required params to the `nextflow run` command.
+
+- Copy `assets/starter/samplesheet_test_googlebatch.csv` to `assets/samplesheet_test_googlebatch.csv`, and upload the matching FASTQs to `[gcp-test-bucket]/[project-name]/fastq/` before the first CI run.
 
 Row for the test layers table:
 
@@ -302,7 +461,7 @@ Repository secrets:
 | `GCP_WORKLOAD_IDENTITY_PROVIDER` | `[gcp-wif-provider]` |
 | `GCP_CI_SERVICE_ACCOUNT` | `[gcp-ci-service-account]` |
 
-GCP CI needs workload identity federation (WIF) and these repository secrets. WIF is scoped to the GitHub account that owns the repository. Any repository under that account can reuse the same provider and CI service account once the secrets are set on that repository. The one-time WIF and IAM setup is shared by all of a client's pipelines and is described in the client skill. For a new repository, confirm that the project-level setup is in place and set the two secrets.
+GCP CI needs workload identity federation (WIF) and these repository secrets. WIF is scoped to the GitHub account that owns the repository. Any repository under that account (`[github-owner]`) can reuse the same provider and CI service account once the secrets are set on that repository. If the repositories belong to a GitHub organization, set the two secrets once as organization secrets instead. The one-time WIF and IAM setup is shared by all of a client's pipelines: see "GitHub Actions CI access setup" above. For a new repository, confirm that the project-level setup is in place and set the two secrets.
 
 Integration test command:
 

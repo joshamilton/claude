@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# Run lint, then nf-test (path-gated nf-core, local components, pipeline integration).
+set -euo pipefail
+
+./scripts/lint.sh
+./scripts/test.sh
