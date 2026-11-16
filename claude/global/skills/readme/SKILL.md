@@ -20,7 +20,7 @@ One reference file and two templates:
 
 - `assets/readme-template-nextflow.md` — the starting point for the README of a Nextflow pipeline. The text that depends on the cloud or on the container strategy comes from `aws.md`, `gcp.md`, and `containers.md` in the `references/` folder of the `nextflow` skill.
 
-In both templates, copy the file to the project root, replace the `[placeholders]`, and delete what does not apply. `[env-dir]` is the folder that holds the environment yml: `config` in a Python script project, `conf` in a Nextflow pipeline.
+In both templates, copy the file to the project root, replace the `[placeholders]`, and delete what does not apply. `[env-dir]` is the folder that holds the environment yml: `config` in a Python or R script project, `conf` in a Nextflow pipeline.
 
 For a new project, the `project-setup` skill runs first and calls this skill to create the README. The language or pipeline skill sets `[env-dir]` and the code folder.
 

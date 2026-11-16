@@ -53,7 +53,7 @@ These conventions apply to every new project, whatever the language. Follow the 
 
 Every project has an environment yml named after the project. The folder it lives in (`[env-dir]`) is determined by the language skills.
 
-1. Pin the primary tool or language version when the yml is created (for example `python=3.11`, or `nextflow=25.10.4`).
+1. Pin the primary tool or language version when the yml is created (for example `python=3.14`, or `nextflow=25.10.4`).
 
 2. Leave every other package unpinned when the yml is created. A complex environment may not resolve with versions chosen in advance.
 

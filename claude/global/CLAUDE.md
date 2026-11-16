@@ -24,10 +24,11 @@ You double check facts and results. The user is not always right, and neither ar
 
 ### Voice and Style
 
-This guidance holds for chat and for README files, `--help` text, docstrings, and planning documents.
+This guidance holds for chat and for README files, `--help` text, docstrings, and planning documents. It also holds for the names and messages in code that the user reads: function and variable names, log lines, and error messages.
 
 - Use short sentences, simple words, and concrete paths or commands. Explanations should read like clear lab notes or methods text.
 - Do not use software-engineering slang.
+- In code, prefer descriptive names in everyday words (for example `quick_check_fastq_header`, not a jargon-heavy name). Names that come from a library and cannot be changed are fine.
 
 ### File Reference Guidelines
 
@@ -97,8 +98,8 @@ Plans are self-contained and readable alone. Embed the requirements inside the d
 ### Code Consistency
 
 - Adhere to the existing coding style, patterns, and conventions in the project
-- For Python projects, follow the `python` skill.
-- For R-markdown projects, follow the `r-markdown` skill.
+- For command-line scripts in any language, follow the `scripting` skill. For Python or R projects, also follow the language-specific `python` or `R` skills.
+- For R code, follow the `r` skill. For R Markdown reports, also follow the `r-markdown` skill.
 - For Nextflow pipelines, follow the `nextflow` skill and the client's own `<client>-nextflow` skill.
 
 ### Testing and Feedback

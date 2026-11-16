@@ -152,7 +152,7 @@ Create `conf/[project-name].yml` from `project-setup/assets/environment.yml`. Ev
 
 - `nextflow=25.10.4`
 - `nf-core=4.0.0`
-- `python=3.12`
+- `python=3.14`
 
 Add the cloud tools: `google-cloud-sdk` for GCP, `awscli` and `boto3` for AWS. Add `nf-test=0.9.5` when the pipeline has the development tooling. The `project-setup` rules apply: only the primary tool (`nextflow`) is pinned when the file is created, and the other versions listed here are written in once the environment resolves.
 
