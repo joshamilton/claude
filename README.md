@@ -9,13 +9,22 @@ All rights reserved.
 
 This repo describes how I configure and use Claude. I use Claude both for personal projects and for client-facing work through my consulting business, Trophic Nexus. For clients, I typically use Claude to conduct reproducible data analysis tasks, and for writing scientific software and workflows. For personal use, I use Claude to vibe-code software or agentically perform tasks I'm too lazy to do myself.
 
-This repo contains ... [TBD]
+This repo contains:
+
+- `claude/`: `CLAUDE.md` and `SKILL.md` files. Contains three folders:
+    - `global`, applies everywhere
+    - `joshamilton`, personal projects
+    - `trophicnexus`, consulting, with one subfolder per client
+
+- `config/`: Configuration files
+
+- `scripts/`: Scripts
 
 ### How I Use Claude
 
 1. I use Claude via a consumer plan (Pro / Max) and do not allow the use of chats and coding sessions to train my models (https://claude.ai/settings/data-privacy-controls).
 
-2. I set a number of other privacy-protecting features in `~/claude/config/settings.json`.
+2. I set a number of other privacy-protecting features in `~/.claude/settings.json`.
 
 3. I use Claude throughout the day: morning, afternoon, and evening. I automatically send a prompt to Claude Code at 7am, enabling me to have three 5-hour sessions a day: 7-12, 12-5, and 5-10. 
 
@@ -27,10 +36,37 @@ This repo contains ... [TBD]
 
 7. All Claude configuration goes into this standalone Git repo. I manually symlink into the appropriate folders as described in this document. Currently supported:
     - settings.json
+    - global `CLAUDE.md` and skills
+    - personal `CLAUDE.md` and skills
+    - consulting `CLAUDE.md` files and client-specific skills
 
 8. Do not use the `~/.claude/plans/` folder. All plans go in the root of the repo being worked on, in a file named `plan-<topic>.md`.
 
-9. Do not use MEMORY.md (`autoMemoryEnabled: false`). Instead, I instruct Claude to create or update CLAUDE.md or SKILLS.md files instead. This provides visibility and control.
+9. Do not use MEMORY.md (`autoMemoryEnabled: false`). Instead, I instruct Claude to create or update `CLAUDE.md` or `SKILL.md` files. This provides visibility and control.
+
+#### Available Skills
+
+The following skills are available:
+
+Global skills (`claude/global/skills/`), available in every session:
+
+- `extend-skill-creator` — extends the Anthropic `skill-creator` skill with my personal rules for writing and organizing skills
+
+- `project-setup` — establishes shared conventions for all projects, personal and consulting
+
+- `readme` — establishes the structure of a project's `README.md`
+
+- `scripting` — establishes shared conventions for command-line scripts in any language
+
+- `python` — expands upon `scripting` with conventions for Python projects and code
+
+- `r` — expands upon `scripting` with conventions for R projects and code
+
+- `r-markdown` — expands upon `scripting` and `r` with conventions for R Markdown reports
+
+- `nextflow` — establishes conventions shared by every Nextflow pipeline
+
+Client skills (`claude/trophicnexus/<client>/skills/`) hold only what belongs to one client. Anything that any client could need goes into a global skill instead.
 
 ### Where I use Claude
 
@@ -53,6 +89,7 @@ A LaunchAgent only fires while the Mac is awake. A sleeping laptop will not run 
 The prompt runs from its own empty folder, `/Users/joshamilton/.local/share/claudeping`. This is necessary, because macOS does not let a background job read the `Documents` folder. A job that starts in Documents fails with `Operation not permitted`. Furthermore, Claude files every session under the folder it starts in, so that folder is also on the project allowlist (`config/project-allowlist.txt`), which keeps the daily cleanup in section 2 from deleting it. Finally, the plist also raises the number of files the job may keep open to 512. A LaunchAgent starts with a limit of 256, and Claude stops with a `low max file descriptors` error at that limit.
 
 To setup: 
+
 1. Confirm the Claude CLI is installed at `/Users/joshamilton/.local/bin/claude`:
     ```bash
     which claude
@@ -262,9 +299,10 @@ To setup:
 
 ### 3. Symlink `settings.json`
 
-`config/settings.json` holds the global Claude Code settings, symlinked to `~/claude/config/settings.json`. The settings are saved in the order used by Claude Code, so I can easily spot differences.
+`config/settings.json` holds the global Claude Code settings, symlinked to `~/.claude/settings.json`. The settings are saved in the order used by Claude Code, so I can easily spot differences.
 
 To setup:
+
 1. Symlink the repo copy into place:
     ```bash
     ln -s /Users/joshamilton/Documents/repos/claude/config/settings.json ~/.claude/settings.json
@@ -281,6 +319,7 @@ To setup:
 `spinnerVerbs` in `config/settings.json` changes the spinner word in the terminal only. The Claude Code panel in VS Code draws its own spinner and reads its own VS Code setting, `claudeCode.spinnerVerbs`. This setting has to be set by hand.
 
 To setup:
+
 1. Open the VS Code user settings file: press `Cmd+Shift+P`, then choose `Preferences: Open User Settings (JSON)`.
 
 2. Add this entry inside the top-level braces:
@@ -296,6 +335,48 @@ To setup:
 3. Save the file.
 
 4. Check the results: send any prompt in the Claude Code panel. The spinner should say `Working`.
+
+### 5. Link the CLAUDE.md and SKILL.md files
+
+Every `CLAUDE.md` and every skill is deployed as a symlink that points into the `claude/` folder of this repo.
+
+To setup:
+
+1. Link the global `CLAUDE.md`, and each global skill. The whole `~/.claude/skills` folder cannot be linked, because Claude keeps its own `~/.claude/skills/synced/` folder there. Therefore, link each file individually:
+
+    ```bash
+    ln -s "$PWD"/claude/global/CLAUDE.md ~/.claude/CLAUDE.md
+    for skill in "$PWD"/claude/global/skills/*/; do
+        ln -s "${skill%/}" ~/.claude/skills/"$(basename "$skill")"
+    done
+    ```
+
+2. Link the personal `CLAUDE.md`. It goes in the folder that holds my personal repos:
+
+    ```bash
+    ln -s "$PWD"/claude/joshamilton/CLAUDE.md ~/Documents/repos/CLAUDE.md
+    ```
+
+3. Link the personal skills into every personal repo (every project in `~/Documents/repos/`):
+
+    ```bash
+    mkdir -p <repo>/.claude
+    ln -s "$PWD"/claude/joshamilton/skills <repo>/.claude/skills
+    ```
+
+4. Link the consulting `CLAUDE.md`, and the `CLAUDE.md` of each client:
+
+    ```bash
+    ln -s "$PWD"/claude/trophicnexus/CLAUDE.md ~/Documents/Employment/CLAUDE.md
+    ln -s "$PWD"/claude/trophicnexus/<client>/CLAUDE.md ~/Documents/Employment/YYYY-<client>/CLAUDE.md
+    ```
+
+5. Link each client's skills into every project for that client:
+
+    ```bash
+    mkdir -p ~/Documents/Employment/YYYY-<client>/repos/<repo>/.claude
+    ln -s "$PWD"/claude/trophicnexus/<client>/skills ~/Documents/Employment/YYYY-<client>/repos/<repo>/.claude/skills
+    ```
 
 ## Development 
 
@@ -374,14 +455,26 @@ Because the the utility can remove these folders in their entirety:
     - sessions: auth/key files keyed by process ID, for the running CLI process itself
     - shell-snapshots: shell environment snapshots, named by timestamp, not by project or session.
 
+### How Claude finds files
 
+1. Claude loads `CLAUDE.md` from the folder where the session starts and from every folder above it, all the way up. It does not stop at the root of the Git repo. This is why one `CLAUDE.md` in a client folder applies to every project repo inside it.
 
-### Settings and Environmental Variables: `~/claude/settings.json`
+2. Personal skills are loaded from `~/.claude/skills/`. Project skills are loaded from `.claude/skills/` in the start folder and in each parent folder, up to the root of the Git repo. The search stops there. A skill in a client folder above the repo is not loaded, so each project repo needs its own link. The link is the folder: `.claude/skills` in the repo points to the `skills` folder in this repo.
+
+Those behaviors establish how this repo's symlinks work:
+
+- The global files apply everywhere, so they are linked from `~/.claude/`.
+
+- The personal `CLAUDE.md` is linked from the folder that holds my personal repos. Its `skills` folder is linked into every personal repo.
+
+- The consulting `CLAUDE.md` is linked from the folder that holds all client folders. Each client folder gets its own `CLAUDE.md`. Each client's `skills` folder is linked into each project repo for that client.
+
+### Settings and Environmental Variables: `~/.claude/settings.json`
 
 #### Environmental Variables
 Claude Environmental Variables are documented here: [Environment variables](https://code.claude.com/docs/en/env-vars).
 
-The following variables are enabled in `~/claude/settings.json`:
+The following variables are enabled in `~/.claude/settings.json`:
 
 - CLAUDE_CODE_DISABLE_ERROR_REPORTING: turn off error reporting
 - CLAUDE_CODE_DISABLE_FEEDBACK_SURVEY: turn off "how is Claude doing" survey
@@ -391,7 +484,7 @@ The following variables are enabled in `~/claude/settings.json`:
 - DISABLE_TELEMETRY: turn off telemetry data collection 
 - DO_NOT_TRACK: general opt-out signal
 
-The following variables are not enabled in `~/claude/settings.json`, but are worth knowing about:
+The following variables are not enabled in `~/.claude/settings.json`, but are worth knowing about:
 - CLAUDE_CODE_SKIP_PROMPT_HISTORY": session transcripts are ephemeral, never stored on disk
 
 #### Settings
