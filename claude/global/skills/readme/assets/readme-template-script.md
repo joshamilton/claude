@@ -1,6 +1,6 @@
 # [project-name]
 
-[Contact block: see this client's CLAUDE.md]
+[Contact block: see the nearest CLAUDE.md]
 
 ## Overview
 
@@ -13,6 +13,7 @@ Key features:
 Processing overview:
 
 1. [What happens first: the tool and its purpose]
+
 2. [What happens next]
 
 ## Installation
@@ -39,11 +40,12 @@ mamba activate [project-name]
 
 Main parameters:
 
-- `--[flag]` — [Default, if any, and one short phrase.]
+- `--[flag]` - [Default, if any, and one short phrase.]
 
 Steps:
 
 1. [User action]
+
 2. [User action, ending with the copy-paste command]
 
 Minimal example:
@@ -76,11 +78,11 @@ Explicit form (same defaults as above, all paths and tunables shown):
 
 ```text
 [project-name]/
-├── README.md
-├── .gitignore
-├── [env-dir]/
-│   └── [project-name].yml
-└── [code folder from the language skill, with the main file]
+|-- README.md
+|-- .gitignore
+|-- [env-dir]/
+|   `-- [project-name].yml
+`-- [code folder from the language skill, with the main file]
 ```
 
 [One line on the purpose of each folder and main file. Add folders to the tree when they are created.]

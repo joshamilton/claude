@@ -1,6 +1,6 @@
 # [project-name]
 
-[Contact block: see this client's CLAUDE.md]
+[Contact block: see the nearest CLAUDE.md]
 
 [How to use this template: every line in square brackets is a placeholder. A bracketed line that begins with "Cloud:" names a section to copy from the cloud file for this project's cloud, `aws.md` or `gcp.md`, in `nextflow/references/`. Replace each placeholder, and delete this paragraph.]
 
@@ -15,6 +15,7 @@ Key features:
 Processing overview:
 
 1. [Module name: what it does]
+
 2. [Module name: what it does]
 
 ## Installation
@@ -45,17 +46,21 @@ mamba activate [project-name]
 Inputs:
 
 - [Samplesheet: path and one line on what it holds. The full column list is under Detailed command-line usage.]
+
 - [Other inputs, as a compact list]
 
 Main parameters:
 
-- `--input` — [Path to the samplesheet CSV.]
-- `--outdir` — [Output directory.]
-- `--[flag]` — [Default, if any, and one short phrase.]
+- `--input` - [Path to the samplesheet CSV.]
+
+- `--outdir` - [Output directory.]
+
+- `--[flag]` - [Default, if any, and one short phrase.]
 
 Steps:
 
 1. [User action]
+
 2. [User action, ending with the copy-paste command]
 
 Minimal example (local run):
@@ -86,9 +91,9 @@ Pipeline outputs are organized in the following directory structure:
 
 ```text
 outdir/
-├── [NN_STEP_NAME]/           # [description]
-├── [NN_STEP_NAME]/           # [description]
-└── logs/<timestamp>/         # Run diagnostics (params, trace, timeline, software versions)
+|-- [NN_STEP_NAME]/           # [description]
+|-- [NN_STEP_NAME]/           # [description]
+`-- logs/<timestamp>/         # Run diagnostics (params, trace, timeline, software versions)
 ```
 
 Key output files:
@@ -104,17 +109,25 @@ Key output files:
 The pipeline requires the following inputs:
 
 1. Samplesheet: a CSV file with sample metadata and file paths. It has these columns:
+
    - `sample` (required): Unique sample identifier.
+
    - `fastq_1` (required): Path to forward (R1) reads in gzipped FASTQ format. A local path or a cloud path (for example `[cloud path to a FASTQ file]`).
+
    - `fastq_2` (optional): Path to reverse (R2) reads in gzipped FASTQ format. A local path or a cloud path.
+
    - [Any other columns: `column` ([required or optional]): description.]
+
 2. [Reference files, databases, or other required inputs. Give the parameter name, the format, and the validation rules.]
 
 At startup, the pipeline checks the inputs before any process runs:
 
 - The header must include the required columns.
+
 - Each row must have a value in every required column.
+
 - `sample` identifiers must be unique across the file.
+
 - [Any other rule.]
 
 ### Parameters
@@ -128,7 +141,9 @@ At startup, the pipeline checks the inputs before any process runs:
 For deploying and running the pipeline, you need:
 
 - Docker Desktop installed. See the [Docker installation guide](https://docs.docker.com/desktop/).
+
 - GitHub access.
+
 - [Cloud: the access prerequisite from the "Deployment" section of the cloud file.]
 
 ### Docker Containers
@@ -187,12 +202,17 @@ For deploying and running the pipeline, you need:
 
 Install hooks once with `./scripts/setup-githooks.sh`. Each commit runs, in order:
 
-1. `scripts/lint.sh` — `nextflow lint` (allowlisted paths), `nf-core pipelines lint`, local module/subworkflow lint
+1. `scripts/lint.sh` - `nextflow lint` (allowlisted paths), `nf-core pipelines lint`, local module/subworkflow lint
+
 2. `scripts/test.sh`:
-   - nf-core component tests — only when staged files change under `modules/nf-core/` or `subworkflows/nf-core/` (scoped to changed components)
-   - local module tests — `modules/local/`
-   - local subworkflow tests — `subworkflows/local/`
-   - pipeline integration — `tests/default_local.nf.test` with `--profile +local`
+
+   - nf-core component tests - only when staged files change under `modules/nf-core/` or `subworkflows/nf-core/` (scoped to changed components)
+
+   - local module tests - `modules/local/`
+
+   - local subworkflow tests - `subworkflows/local/`
+
+   - pipeline integration - `tests/default_local.nf.test` with `--profile +local`
 
 Run the same checks manually:
 
@@ -227,40 +247,40 @@ nextflow run main.nf \
 
 ```text
 [project-name]/
-├── main.nf                       # Pipeline entry point
-├── nextflow.config               # Core pipeline configuration
-├── nextflow_schema.json          # Parameter validation schema
-├── nf-test.config                # nf-test configuration
-├── modules.json                  # nf-core modules tracking
-├── .nf-core.yml                  # nf-core pipeline configuration
-├── README.md                     # This file
-├── .githooks/pre-commit          # Pre-commit hook
-├── scripts/
-│   ├── lint.sh                   # Lint checks
-│   ├── test.sh                   # Test runner
-│   └── setup-githooks.sh         # Installs the pre-commit hook
-├── assets/                       # Test samplesheets and pipeline assets
-│   └── samplesheet_test_local.csv
-├── conf/                         # Configuration files
-│   ├── base.config               # Base process resources
-│   ├── modules.config            # Module-specific options and publish paths
-│   ├── containers_*.config       # Pinned container images
-│   ├── test.config               # Test profile
-│   └── [project-name].yml        # Conda environment
-├── docker/                       # Container build files (only with custom images)
-├── modules/
-│   ├── local/                    # Modules specific to this pipeline
-│   └── nf-core/                  # Standard nf-core modules
-├── subworkflows/
-│   ├── local/                    # Pipeline-specific subworkflows
-│   └── nf-core/                  # Standard nf-core subworkflows
-├── tests/
-│   ├── default_local.nf.test
-│   ├── default_local.nf.test.snap
-│   ├── nextflow.config
-│   └── .nftignore
-└── workflows/
-    └── [project_name].nf         # Primary analysis workflow
+|-- main.nf                       # Pipeline entry point
+|-- nextflow.config               # Core pipeline configuration
+|-- nextflow_schema.json          # Parameter validation schema
+|-- nf-test.config                # nf-test configuration
+|-- modules.json                  # nf-core modules tracking
+|-- .nf-core.yml                  # nf-core pipeline configuration
+|-- README.md                     # This file
+|-- .githooks/pre-commit          # Pre-commit hook
+|-- scripts/
+|   |-- lint.sh                   # Lint checks
+|   |-- test.sh                   # Test runner
+|   `-- setup-githooks.sh         # Installs the pre-commit hook
+|-- assets/                       # Test samplesheets and pipeline assets
+|   `-- samplesheet_test_local.csv
+|-- conf/                         # Configuration files
+|   |-- base.config               # Base process resources
+|   |-- modules.config            # Module-specific options and publish paths
+|   |-- containers_*.config       # Pinned container images
+|   |-- test.config               # Test profile
+|   `-- [project-name].yml        # Conda environment
+|-- docker/                       # Container build files (only with custom images)
+|-- modules/
+|   |-- local/                    # Modules specific to this pipeline
+|   `-- nf-core/                  # Standard nf-core modules
+|-- subworkflows/
+|   |-- local/                    # Pipeline-specific subworkflows
+|   `-- nf-core/                  # Standard nf-core subworkflows
+|-- tests/
+|   |-- default_local.nf.test
+|   |-- default_local.nf.test.snap
+|   |-- nextflow.config
+|   `-- .nftignore
+`-- workflows/
+    `-- [project_name].nf         # Primary analysis workflow
 ```
 
 [Cloud: any files the cloud file adds to the tree (for example a CI workflow or a cloud test samplesheet).]

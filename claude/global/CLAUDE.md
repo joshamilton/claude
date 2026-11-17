@@ -39,8 +39,8 @@ This guidance holds for chat and for README files, `--help` text, docstrings, an
 Auto memory is off. Nothing carries over between sessions unless it is written to a file.
 
 - Within a conversation, keep the decisions already made and do not reopen them. If the user changes direction, state the changes and continue.
-- After each task, update the skill you used with what you learned. Add only what is general, was tested in this run, and holds for any future task of that kind. Improve an existing bullet before adding a new one, and remove advice that turned out to be wrong. Do not remove or soften the user's rules. If a rules seems wrong, say so in that chat.
-- Decide where each lesson goes by asking what it is true for: every project of that kind (the global skill), personal work only (a personal skill), one client only (that client's skill or `CLAUDE.md`), or this project only (`CLAUDE.local.md` in the project folder). If it could belong at two levels, use the narrower one. Do not save facts about a particular item, such as a sample, or file
+- After each task, prompt the user to update the skill you used with what you learned. Add only what is general, was tested in this run, and holds for any future task of that kind. If you have any questions, ask the user. Improve an existing bullet before adding a new one, and remove advice that turned out to be wrong. Do not remove or soften the user's rules. If a rule seems wrong, say so in the chat.
+- Decide where each lesson goes by asking what it is true for: every project of that kind (the global skill), personal work only (a personal skill), one client only (that client's skill or `CLAUDE.md`), or this project only (`CLAUDE.local.md` in the project folder). If it could belong at two levels, use the narrower one. If you are unsure, ask the user. Do not save facts about a particular item, such as a sample or file.
 - Edit skills and `CLAUDE.md` files in the claude repo (`/Users/joshamilton/Documents/repos/claude/claude/`), not through a symlink path. Do not commit.
 - In the chat, list each change and where it went, one line each.
 

@@ -15,19 +15,25 @@ The general shape every pipeline's init follows, in order:
 4. Create the conda environment and generate the nf-core template:
    ```bash
    mamba env create -f conf/[project-name].yml
-   mamba activate [project-name]
-   nf-core pipelines create --template-yaml pipeline.yml
+   mamba run -n [project-name] nf-core pipelines create --template-yaml pipeline.yml
    ```
 
 5. Integrate the generated `[org]-[project-name]/` folder into the project root. nf-core makes this folder a git repository of its own, and runs Nextflow in the current folder.
+
    - Delete `[org]-[project-name]/.git/` first, so it cannot replace the project's own repository.
+
    - Delete `[org]-[project-name]/README.md` and `[org]-[project-name]/.gitignore`. The project keeps its own `.gitignore`, and the README comes from the `readme` skill.
+
    - Move all remaining contents, including the hidden files, to the repo root.
+
    - Delete the empty `[org]-[project-name]/` folder, the temporary `pipeline.yml`, and the run files that nf-core leaves in the repo root: `null/`, `work/`, `.nextflow/`, and `.nextflow.log*`.
 
 6. Fix Nextflow workflow file naming. The generated pipeline does not compile until this is done, because Nextflow does not allow hyphens in workflow names or in file paths used in `include` statements:
+
    - Rename `workflows/[project-name].nf` to `workflows/[project_name].nf`.
+
    - Update `main.nf`'s `include` statement to `from './workflows/[project_name]'`.
+
    - Use underscores in the workflow names, in `main.nf` and in the workflow file. nf-core writes `[PROJECT-NAME]` and `[ORG]_[PROJECT-NAME]`. Name the inner workflow `[PROJECT_NAME]` and the outer workflow in `main.nf` `NF_[PROJECT_NAME]`, for example `MY_PIPELINE` and `NF_MY_PIPELINE`, not `MY-PIPELINE` and `[CLIENT]_MY-PIPELINE`. The two names must differ: `main.nf` includes the inner workflow, and `nextflow lint` fails with "is already included" if the outer one has the same name.
 
 7. Remove the remaining nf-core references (see "Removing nf-core references" below).
@@ -45,7 +51,9 @@ Because `pipeline.yml` sets `org`, nf-core already writes the client's name in t
 GitHub URLs. nf-core writes `https://github.com/[org]/[project-name]`, which is wrong when the GitHub owner differs from `[org]`. Replace it with `[github-url]`, and `https://raw.githubusercontent.com/[org]/[project-name]` with `https://raw.githubusercontent.com/[github-owner]/[project-name]`, in:
 
 - `main.nf` (header)
+
 - `modules.json` (`homePage`)
+
 - `nextflow_schema.json` (`$id`)
 
 `nextflow.config` is replaced from `assets/nextflow.config` (step 4 of the procedure in `SKILL.md`), so it needs no changes here.
@@ -57,7 +65,9 @@ TODO comments. Change `// TODO nf-core:` to `// TODO:` in `conf/base.config` and
 Keep these, because they are functional dependencies on nf-core, not branding:
 
 - `subworkflows/nf-core/` (vendored nf-core subworkflows) and `modules/nf-core/` (vendored modules, once installed)
+
 - the `utils_nfcore_[project-name]_pipeline` subworkflow name and its `../../nf-core/` imports
+
 - the `nf-core` package pin in the environment yml
 
 Verify: search the repo for `github.com/[org]/` and `TODO nf-core`, and run `nextflow lint` on `main.nf` and `workflows/`.
@@ -109,11 +119,11 @@ Every pipeline organizes modules and subworkflows the same way:
 
 ```
 modules/
-├── local/       # Custom modules specific to this pipeline
-└── nf-core/     # Vendored nf-core modules
+|-- local/       # Custom modules specific to this pipeline
+`-- nf-core/     # Vendored nf-core modules
 subworkflows/
-├── local/       # Pipeline-specific subworkflows
-└── nf-core/     # Vendored nf-core subworkflows
+|-- local/       # Pipeline-specific subworkflows
+`-- nf-core/     # Vendored nf-core subworkflows
 ```
 
 ## Installing nf-core modules and subworkflows
@@ -121,9 +131,8 @@ subworkflows/
 From the project's conda environment:
 
 ```bash
-mamba activate [project-name]
-nf-core modules install <module>
-nf-core subworkflows install <subworkflow>
+mamba run -n [project-name] nf-core modules install <module>
+mamba run -n [project-name] nf-core subworkflows install <subworkflow>
 ```
 
 Modules install under `modules/nf-core/`; subworkflows under `subworkflows/nf-core/`. Nested modules (for example `kraken2/kraken2`) are valid.
@@ -132,17 +141,17 @@ Modules install under `modules/nf-core/`; subworkflows under `subworkflows/nf-co
 
 The files in `assets/` use these placeholders, in addition to `[project-name]` and `[project_name]` (see `project-setup`). Fill them from the Nextflow table in the client `CLAUDE.md`. If a row says "not recorded", ask the user.
 
-- `[manifest-name]` — the `manifest.name` row.
+- `[manifest-name]` - the `manifest.name` row.
 
-- `[org]` — the `.nf-core.yml` `template.org` row.
+- `[org]` - the `.nf-core.yml` `template.org` row.
 
-- `[author]` — the `author` row.
+- `[author]` - the `author` row.
 
-- `[github-url]` — the GitHub hosting row, with `[project-name]` filled in.
+- `[github-url]` - the GitHub hosting row, with `[project-name]` filled in.
 
-- `[github-owner]` — the owner part of `[github-url]` (for example `trophicnexus` in `https://github.com/trophicnexus/[project-name]`).
+- `[github-owner]` - the owner part of `[github-url]` (for example `trophicnexus` in `https://github.com/trophicnexus/[project-name]`).
 
-- `[pipeline-description]` — one sentence, from the user.
+- `[pipeline-description]` - one sentence, from the user.
 
 The cloud placeholders (`[gcp-...]`, `[aws-...]`) are defined in `gcp.md` and `aws.md`, and filled from the cloud table in the client `CLAUDE.md`.
 
@@ -151,7 +160,9 @@ The cloud placeholders (`[gcp-...]`, `[aws-...]`) are defined in `gcp.md` and `a
 Create `conf/[project-name].yml` from `project-setup/assets/environment.yml`. Every Nextflow pipeline has these dependencies, in alphabetical order with the cloud tools and any extra tools:
 
 - `nextflow=25.10.4`
+
 - `nf-core=4.0.0`
+
 - `python=3.14`
 
 Add the cloud tools: `google-cloud-sdk` for GCP, `awscli` and `boto3` for AWS. Add `nf-test=0.9.5` when the pipeline has the development tooling. The `project-setup` rules apply: only the primary tool (`nextflow`) is pinned when the file is created, and the other versions listed here are written in once the environment resolves.

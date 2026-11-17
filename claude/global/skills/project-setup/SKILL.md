@@ -1,6 +1,6 @@
 ---
 name: project-setup
-description: Use whenever the user starts a new project, or asks for a README, an environment yml, or a .gitignore file. Creates the starting files and folders, and works with the readme skill and the language skills. Also defines the project naming convention, the environment yml rules, the default .gitignore, and the folder conventions (assets/, data/, results/, numbered output folders).
+description: Use when the user starts a new project, or asks for a README, an environment yml, or a `.gitignore` file, for personal or client work. Creates the starting files and folders, and sets the naming, environment yml, `.gitignore`, and folder rules.
 ---
 
 # Project setup conventions
@@ -11,11 +11,16 @@ These conventions apply to every new project, whatever the language. Follow the 
 
 1. Confirm `[project-name]` with the user if the folder name is unclear. Compute `[project_name]` and `[YEAR]` (see "Placeholders").
 
-2. Read the language or pipeline skills that apply (`python`, `nextflow`, etc), and the client-specific language skill. They give:
+2. Read the language or pipeline skills that apply (`python`, `r`, `nextflow`, etc). They give:
+
     - `[env-dir]`
+
     - the primary tool and its version
+
     - the extra dependencies
+
     - the folders and files to create
+
     - the `.gitignore` entries to append
 
 3. Find the contact block (see "Placeholders").
@@ -36,17 +41,20 @@ These conventions apply to every new project, whatever the language. Follow the 
 
 ## Placeholders
 
-- `[project-name]` — the project folder basename. Hyphens are kept. Use it in prose, README titles, URLs, and the `name:` field of the environment yml.
+- `[project-name]` - the project folder basename. Hyphens are kept. Use it in prose, README titles, URLs, and the `name:` field of the environment yml.
 
-- `[project_name]` — the same name with every hyphen replaced by an underscore. Use it only where a file name or an import needs it. If the folder name has no hyphens, the two are the same.
+- `[project_name]` - the same name with every hyphen replaced by an underscore. Use it only where a file name or an import needs it. If the folder name has no hyphens, the two are the same.
 
-- `[YEAR]` — the current year, four digits.
+- `[YEAR]` - the current year, four digits.
 
-- `[Contact block]` — the block at the top of the README, including the copyright line. Templates write it as `[Contact block: see this client's CLAUDE.md]`.
+- `[Contact block]` - the block at the top of the README, including the copyright line. Templates write it as `[Contact block: see the nearest CLAUDE.md]`.
 
     - Take it from the `CLAUDE.md` closest to the project folder (the nearest one above it that has a "Contact block" section).
+
     - For client work, if no client `CLAUDE.md` has a block, use the Trophic Nexus block.
+
     - If no block is found, or it is unclear which one applies, ask the user which block to use. Never invent a block or reuse another client's block.
+
     - Replace `[YEAR]` and `[project-name]` inside the block before writing it to the README.
 
 ## Environment yml
@@ -79,15 +87,15 @@ Every project needs a `.gitignore`. Copy `assets/gitignore` to `.gitignore` at t
 
 Setup creates the folders listed in step 4 of the setup procedure. Create each folder below when the project first needs it.
 
-- `assets/` — supporting files that are not code, config, or output: reference sequences, databases, samplesheets, schema files, small test files. Tracked by git.
+- `assets/` - supporting files that are not code, config, or output: reference sequences, databases, samplesheets, schema files, small test files. Tracked by git.
 
-- `data/` — local copies of large input files: fastq files, bam files, other large files. Ignored by git.
+- `data/` - local copies of large input files: fastq files, bam files, other large files. Ignored by git.
 
-- `logs/` — log files. Ignored by git.
+- `logs/` - log files. Ignored by git.
 
-- `results/` — output files, organized by step. Ignored by git.
+- `results/` - output files, organized by step. Ignored by git.
 
-- `work/` — scratch space for workflow runs. Ignored by git.
+- `work/` - scratch space for workflow runs. Ignored by git.
 
 Output folders:
 

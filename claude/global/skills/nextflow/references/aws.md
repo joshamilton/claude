@@ -5,6 +5,7 @@ Use this file for a pipeline that runs on AWS: production runs go through AWS Ba
 Two parts follow the placeholder table:
 
 - "Pipeline settings" holds the AWS parts of `nextflow.config` and `conf/base.config`.
+
 - "README text" holds the sections that fill the bracketed lines that begin with "Cloud:" in the Nextflow README template of the `readme` skill.
 
 ## Placeholders
@@ -14,6 +15,7 @@ The values are identifiers, not credentials. They come from the cloud table in t
 Cloud values are of two kinds:
 
 - Values that identify an account or a user (for example project, account, region, profile, queue, service account, network) default to `null` in `params`. Pass them on the command line with the parameter name.
+
 - Pipeline-specific settings (for example machine type, disk size, spot use, retries) keep a shared default in `params`.
 
 AWS has job queues, so it has two queue values for spot- and on-demand instances. `docker/build.sh` takes `--cloud aws`, the account, the region, and the profile as flags (see `containers.md` in this folder).
@@ -178,8 +180,11 @@ AWS head node. This is the EC2 instance that starts production runs. It uses its
     In the AWS Console:
 
     1. Open EC2, Instances, in region `[aws-region]`, and click Launch instances.
+
     2. Choose an Amazon Linux 2023 image, and set the name (for example `nf-head`), instance type, and storage as needed.
+
     3. Expand Advanced details, and set IAM instance profile to `[aws-instance-profile]`.
+
     4. Launch the instance, then connect to it.
 
 2. Install Docker Engine on the head node, then sign out and back in so the `docker` group applies.
@@ -206,7 +211,7 @@ AWS head node. This is the EC2 instance that starts production runs. It uses its
     ```bash
     unset AWS_PROFILE AWS_DEFAULT_PROFILE AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN
     test ! -f ~/.aws/credentials \
-      && echo "No credentials file — the instance profile will be used"
+      && echo "No credentials file - the instance profile will be used"
 
     aws configure list
     # expect: the access_key and secret_key lines do not name a credentials file or an environment variable
@@ -267,13 +272,21 @@ Access prerequisite, for the Prerequisites list:
 Cloud resources, for the Cloud resources subsection:
 
 - An AWS Batch compute environment `[aws-compute-environment]`, using the custom AMI with the AWS CLI at `/home/ec2-user/miniconda/bin/aws`. Its instance role needs permission to pull from `[aws-repository]` when the pipeline has custom container images.
+
 - The job queues `[aws-queue]` and `[aws-on-demand-queue]` in `[aws-region]`.
+
 - The head-node instance profile `[aws-instance-profile]`, with permission to submit Batch jobs and read and write the buckets.
+
 - A VPC, subnets, and security groups set up for the compute environment.
+
 - The scratch bucket `[aws-scratch-bucket]` for work directories and test outputs.
+
 - The output bucket `[aws-output-bucket]` for pipeline outputs.
+
 - The reference bucket `[aws-reference-bucket]` for databases and other reference data.
+
 - The test bucket `[aws-test-bucket]` for test samplesheet FASTQs.
+
 - An ECR repository `[aws-repository]` (address `[aws-registry-path]`), only if the pipeline has custom container images.
 
 ### Development Guidelines

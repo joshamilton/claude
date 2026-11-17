@@ -4,7 +4,7 @@ This file holds the facts about this client that are cheap to keep: the contact 
 
 ## Contact block
 
-Use this block in place of `[Contact block: see this client's CLAUDE.md]` wherever a template calls for it:
+Use this block in place of `[Contact block: see the nearest CLAUDE.md]` wherever a template calls for it:
 
 ```
 [Fill in: name/contact line this client's deliverables should use]

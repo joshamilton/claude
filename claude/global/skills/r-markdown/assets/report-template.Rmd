@@ -1,0 +1,98 @@
+---
+title: "[Report title]"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    self_contained: true
+params:
+  # Report Metadata
+  report_title: "[Report title]"
+  report_author: NULL
+  # Styling
+  logo: NULL
+  css: NULL
+  # Input Files
+  input_file: NULL  # will get passed in by the calling pipeline
+  # Section Control
+  show_summary: true
+---
+
+```{r setup, include=FALSE}
+################################################################################
+### [project_name].Rmd
+### [Contact block: see the nearest CLAUDE.md]
+### [Description]
+################################################################################
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+```
+
+```{r load_libraries, include=FALSE}
+suppressPackageStartupMessages({
+  # Third-party packages (alphabetical order within group)
+  library(ggplot2)
+  library(knitr)
+  # Add other third-party packages here. Only load what the report uses.
+})
+```
+
+```{r helper_functions, include=FALSE}
+#' Read the input table
+#'
+#' @param path Path to a CSV file
+#' @return A data frame with the identifier column read as text
+read_input_table <- function(path) {
+  read.csv(path, colClasses = c(sample = "character"), check.names = FALSE)
+}
+
+#' Plot the reads of each sample
+#'
+#' @param data A data frame with the columns `sample` and `reads`
+#' @return A ggplot object
+plot_reads <- function(data) {
+  ggplot(data, aes(x = sample, y = reads)) +
+    geom_col() +
+    scale_y_continuous(labels = function(x) format(x, big.mark = ",", scientific = FALSE)) +
+    theme_bw()
+}
+```
+
+```{r load_data, include=FALSE}
+input_data <- tryCatch(
+  read_input_table(params$input_file),
+  error = function(e) NULL
+)
+```
+
+```{r report_header, results='asis'}
+# Show the logo and apply the style sheet only when the params give them.
+if (!is.null(params$css)) {
+  cat(as.character(htmltools::includeCSS(params$css)), "\n")
+}
+if (!is.null(params$logo)) {
+  cat(as.character(htmltools::img(src = knitr::image_uri(params$logo), alt = "Logo", style = "height: 60px;")), "\n\n")
+}
+if (!is.null(params$report_author)) {
+  cat("Prepared by", params$report_author, "\n\n")
+}
+```
+
+<!-- Summary -->
+
+```{r summary, eval=params$show_summary && !is.null(input_data), results='asis'}
+cat("# Summary\n\n")
+cat("The input table has", nrow(input_data), "rows.\n\n")
+print(kable(head(input_data)))
+```
+
+```{r summary_plot, eval=params$show_summary && !is.null(input_data), fig.height=4, fig.width=6}
+tryCatch({
+  print(plot_reads(input_data))
+}, error = function(e) {
+  cat("Error generating the reads plot:", e$message, "\n")
+})
+```
+
+```{r no_data, eval=is.null(input_data), results='asis'}
+cat("The input table could not be read, so the data sections are left out.\n\n")
+```

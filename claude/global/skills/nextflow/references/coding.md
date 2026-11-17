@@ -117,10 +117,15 @@ Workflow and DSL2 names: uppercase `[project_name]` (for example folder `nf-my-p
 ### `workflows/[project_name].nf`
 
 - File name uses underscores (`[project_name]`).
+
 - Workflow name uses underscores (e.g. `NF_MY_PIPELINE`).
+
 - Alias modules when the same tool runs more than once.
+
 - Collect MultiQC inputs in `ch_multiqc_files` as modules are added.
+
 - Default MultiQC config: `file("${projectDir}/assets/multiqc_config.yml", checkIfExists: true)`.
+
 - Write software versions to `${outdir}/logs/${params.trace_report_suffix}/`.
 
 ```groovy
@@ -196,7 +201,9 @@ workflow NF_MY_PIPELINE {
 ### `main.nf`
 
 - Name the outer workflow `NF_[PROJECT_NAME]` (see step 6 of the integration workflow in `setup.md`).
+
 - `include` workflow from `./workflows/[project_name]` (underscores).
+
 - Pass `params` through to init subworkflow and main workflow.
 
 ```groovy
@@ -231,8 +238,11 @@ workflow {
 Extend the nf-core init subworkflow:
 
 1. Add pipeline-specific params to `PIPELINE_INITIALISATION` `take:` block.
+
 2. Call validation functions after `UTILS_NFCORE_PIPELINE`.
+
 3. Use `resolveInputPath()` for relative FASTQ paths in samplesheet channel construction.
+
 4. Add `validateInputSamplesheet()` and any database validators.
 
 `resolveInputPath()` (required for nf-test local runs):
@@ -281,10 +291,15 @@ channel
 Combine these in one change when adding a module:
 
 - Install it: `nf-core modules install <module>` (or add `modules/local/` for a custom one).
+
 - Wire it into the workflow file: import, alias if the same tool runs more than once, connect channels, add its outputs to `ch_multiqc_files` if it reports to MultiQC.
+
 - Configure it in `conf/modules.config`: `publishDir`, `ext.args`, container assignment.
+
 - Configure resources in `conf/base.config` if the defaults are insufficient.
+
 - Add any new required params to `nextflow.config` and its `validation.defaultIgnoreParams` if appropriate.
+
 - Test it: for a pipeline with the development tooling, also pin its container in `conf/containers_*.config` (strategy A), add its params to `conf/test.config` and to the cloud workflow, add a section to `assets/multiqc_config.yml` if it reports to MultiQC, and update the assertions and the snapshot in `tests/default_local.nf.test`. For a pipeline without it, test as described in "Testing without the development tooling" below.
 
 ## Testing without the development tooling

@@ -1,6 +1,6 @@
 ---
 name: nextflow
-description: Use when initializing, writing, or extending any Nextflow pipeline. Covers the conventions shared by every Nextflow pipeline, which are initialized from the nf-core template. This skill covers nf-core template integration, how to remove nf-core branding, the nextflow.config template, resource and publishDir conventions in conf/, container strategies, AWS and GCP settings, and the development tooling (lint, nf-test, pre-commit hook).
+description: Use when initializing, writing, or extending a Nextflow pipeline, or when setting up its cloud (AWS or GCP) settings, containers, README, or development tooling, for personal or client work. Gives the shared conventions that start from the nf-core template: `nextflow.config`, the `conf/` files, and the lint and test scripts.
 ---
 
 # Shared Nextflow conventions
@@ -31,24 +31,24 @@ Follow these steps in order. Skip a step that does not apply.
 
 ## Reference files
 
-- `references/setup.md` — nf-core template integration, branding removal, `pipeline.yml`, the placeholders for Nextflow files, the environment yml, directory structure, development tooling.
+- `references/setup.md` - nf-core template integration, branding removal, `pipeline.yml`, the placeholders for Nextflow files, the environment yml, directory structure, development tooling.
 
-- `references/coding.md` — `nextflow.config` section order, container registry setting, `conf/base.config` resources, `conf/modules.config` pattern, adding a module.
+- `references/coding.md` - `nextflow.config` section order, container registry setting, `conf/base.config` resources, `conf/modules.config` pattern, adding a module.
 
-- `references/aws.md` — pipelines on AWS Batch.
+- `references/aws.md` - pipelines on AWS Batch.
 
-- `references/gcp.md` — pipelines on Google Batch.
+- `references/gcp.md` - pipelines on Google Batch.
 
-- `references/containers.md` — the two container strategies and their config templates.
+- `references/containers.md` - the two container strategies and their config templates.
 
 ## Asset files
 
-- `assets/nextflow.config` — the `nextflow.config` template.
+- `assets/nextflow.config` - the `nextflow.config` template.
 
-- `assets/build.sh` — the `docker/build.sh` template for custom images, for AWS and GCP.
+- `assets/build.sh` - the `docker/build.sh` template for custom images, for AWS and GCP.
 
-- `assets/dev-tooling/` — the lint and test scripts, the pre-commit hook, `nf-test.config`, the `tests/` files, and `.nf-core.yml`.
+- `assets/dev-tooling/` - the lint and test scripts, the pre-commit hook, `nf-test.config`, the `tests/` files, and `.nf-core.yml`.
 
-- `assets/starter/` — `schema_input.json` (every pipeline), and the test samplesheets, `multiqc_config.yml`, and `conf/test.config` (development tooling).
+- `assets/starter/` - `schema_input.json` (every pipeline), and the test samplesheets, `multiqc_config.yml`, and `conf/test.config` (development tooling).
 
-- `assets/gcp-integration-test.yml` — the GitHub Actions workflow for a pipeline on GCP.
+- `assets/gcp-integration-test.yml` - the GitHub Actions workflow for a pipeline on GCP.

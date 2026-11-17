@@ -4,7 +4,7 @@ Projects can be written in any language. The global `CLAUDE.md` covers interacti
 
 ## Contact block
 
-This is the default block. Use it only when no client `CLAUDE.md` closer to the project gives a block of its own. Use it in place of `[Contact block: see this client's CLAUDE.md]` wherever a template calls for it:
+This is the default block. Use it only when no client `CLAUDE.md` closer to the project gives a block of its own. Use it in place of `[Contact block: see the nearest CLAUDE.md]` wherever a template calls for it:
 
 ```
 Copyright (c) [YEAR], Trophic Nexus Bioinformatics Consulting, LLC  

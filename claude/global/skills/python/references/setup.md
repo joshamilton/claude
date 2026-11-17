@@ -7,18 +7,27 @@ This file holds what is specific to Python script projects (not package or Jupyt
 Use these values in the `scripting` setup:
 
 - File extension: `.py`. Script names are snake_case.
+
 - Primary tool: `python=3.14`. Extra packages: `tqdm`.
+
 - `.gitignore` entries: the Python entries below.
+
 - Run command: `python src/[project_name].py [arguments]`, in the project's environment (`mamba run -n [project-name] python src/[project_name].py`).
+
 - Parse check: `mamba run -n [project-name] python -m py_compile src/[project_name].py`.
 
 Make the script follow the Python sections of `references/coding.md`:
 
 - `argparse` with `--log-level` and `--log-file` ("Command-line Arguments")
+
 - logging with `setup_logging()` ("Logging Configuration")
+
 - `tqdm` progress bars for loops over records or files ("Progress bars")
+
 - error handling with the standard exit codes ("Error Handling and Exit Codes")
+
 - type hints and Google-style docstrings on every function ("Function Documentation")
+
 - imports in standard library, third-party, local order ("Library Loading")
 
 When you validate, also run the parse check.
@@ -30,7 +39,9 @@ When you validate, also run the parse check.
 This file specifies the conda environment for the project. Python-specific entries:
 
 - Pin `python=3.14` when the yml is created.
+
 - Include `tqdm`. Leave it unpinned until the environment resolves.
+
 - Pin all other packages after the environment resolves (see "Environment yml" in the `project-setup` skill).
 
 The `logging`, `argparse`, `pathlib`, and `typing` modules are part of the Python standard library, so they need no entry.
@@ -43,7 +54,7 @@ This file is the main script for the project. It follows the section order in "S
 #!/usr/bin/env python
 ################################################################################
 ### [project_name].py
-### [Contact block: see this client's CLAUDE.md]
+### [Contact block: see the nearest CLAUDE.md]
 ### [Description]
 ################################################################################
 
@@ -209,7 +220,9 @@ if __name__ == "__main__":
 The main script:
 
 1. Starts with the shebang line `#!/usr/bin/env python`.
+
 2. Calls `main()` only when it is run as a script (`__name__ == "__main__"`), so that importing the file loads the functions without running the analysis.
+
 3. Imports its supporting modules, if it has any, from the same `src/` folder (for example `from [project_name]_helper import ...`).
 
 ### .gitignore Template

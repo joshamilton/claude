@@ -3,6 +3,7 @@
 A pipeline uses one of two strategies, or combines them. Any client can use any strategy. The pipeline's own `nextflow.config` shows which one it uses. For a new pipeline, ask the user.
 
 - Strategy A: community or Wave images, pinned per process in `conf/containers_*.config`.
+
 - Strategy B: custom images in a cloud registry, named in `params.containers` in `conf/modules.config`.
 
 Use A for tools that nf-core modules already provide an image for. Use B when the pipeline needs an image that no module provides. A pipeline can use A for most processes and B for the few that need a custom image.
@@ -10,6 +11,7 @@ Use A for tools that nf-core modules already provide an image for. Use B when th
 The registry address for custom images depends on the cloud:
 
 - AWS (ECR): `[aws-registry-path]` (see `aws.md` in this folder).
+
 - GCP (Artifact Registry): `[gcp-registry-path]` (see `gcp.md` in this folder).
 
 ## Strategy A: pinned images
@@ -18,9 +20,11 @@ Pin the container of every process in a containers config file when you install 
 
 Files:
 
-- `conf/containers_docker_amd64.config` — cloud runs and local x86_64 runs.
-- `conf/containers_docker_arm64.config` — local runs on Apple Silicon. Use arm64-native digests where they exist.
-- `conf/containers_wave_arch_arm64.config` — included from the `local` profile on arm64 only. It sets `arch = 'arm64'` for processes that use native arm64 images. Other processes default to amd64 emulation.
+- `conf/containers_docker_amd64.config` - cloud runs and local x86_64 runs.
+
+- `conf/containers_docker_arm64.config` - local runs on Apple Silicon. Use arm64-native digests where they exist.
+
+- `conf/containers_wave_arch_arm64.config` - included from the `local` profile on arm64 only. It sets `arch = 'arm64'` for processes that use native arm64 images. Other processes default to amd64 emulation.
 
 Wiring in the `local` profile of `nextflow.config`. With strategy B only, the `local` profile has no `includeConfig` statements for container files, and `process.arch` is not set:
 
@@ -119,19 +123,25 @@ process {
 In the config, `[registry-path]` is built from the same parameters as the placeholders in `aws.md` and `gcp.md`:
 
 - AWS: `${params.aws_account_id}.dkr.ecr.${params.aws_region}.amazonaws.com/[aws-repository]` (`[aws-registry-path]`)
+
 - GCP: `${params.gcp_location}-docker.pkg.dev/${params.gcp_project}/[gcp-repository]` (`[gcp-registry-path]`)
 
 Build and push the images with `docker/build.sh`. Copy it from `assets/build.sh` in the `nextflow` skill, replace `[project-name]`, and make it executable. The same script serves both clouds. Add one `build_and_push` line per image at the end. The script:
 
 - logs in to the registry
+
 - builds the image, and pushes it to `<registry>/<repo>/<image>:<tag>`
+
 - builds for the platforms in `--platform` when it is given (for example `linux/amd64,linux/arm64` for local runs on Apple Silicon), using `docker buildx`
 
 Give the script the registry values as command-line options, never as fixed text in the file:
 
 - `--cloud aws` or `--cloud gcp`, always required.
+
 - AWS: `--aws-profile`, `--aws-account-id`, and `--aws-region`. The script logs in with `aws ecr get-login-password`.
+
 - GCP: `--gcp-project` and `--gcp-region`. The script logs in with `gcloud auth configure-docker [gcp-region]-docker.pkg.dev`.
+
 - Both: `--repo` (the repository name, default `[project-name]`) and `--platform` (optional).
 
 ## README text

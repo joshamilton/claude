@@ -7,18 +7,27 @@ This file holds what is specific to R script projects (not package or Shiny appl
 Use these values in the `scripting` setup:
 
 - File extension: `.R`. Script names are snake_case.
+
 - Primary tool: `r-base=4.5`. Extra packages: `r-cli`, `r-logging` and `r-optparse`.
+
 - `.gitignore` entries: the R entries below.
+
 - Run command: `Rscript src/[project_name].R [arguments]`, in the project's environment (`mamba run -n [project-name] Rscript src/[project_name].R`).
+
 - Parse check: `mamba run -n [project-name] Rscript -e 'invisible(parse("src/[project_name].R"))'`.
 
 Make the script follow the R sections of `references/coding.md`:
 
 - `optparse` with `--log-level` and `--log-file` ("Command-line Arguments")
+
 - logging with `setup_logging()` ("Logging Configuration")
+
 - `cli` progress bars for loops over records or files ("Progress bars")
+
 - error handling with the standard exit codes ("Error Handling and Exit Codes")
+
 - roxygen2 documentation on every function ("Function Documentation")
+
 - libraries in base R, third-party, local order, with the packages in one `suppressPackageStartupMessages()` block ("Library Loading")
 
 When you validate, also run the parse check.
@@ -30,10 +39,14 @@ When you validate, also run the parse check.
 This file specifies the conda environment for the project. R-specific entries:
 
 - Pin `r-base=4.5` when the yml is created.
+
 - Include `r-cli`, `r-logging` and `r-optparse`. Every other R package has the conda name `r-<package>` in lowercase (for example `r-ggplot2`). Leave them unpinned until the environment resolves.
+
 - Pin all other packages after the environment resolves (see "Environment yml" in the `project-setup` skill).
 
 ### src/[project_name].R Template Structure
+
+The R template has two parts that the Python template does not. `format_log_line()` is there because the `logging` package has no line format that matches the Python one: it passes the time as text and leaves the name of the root logger empty. The "Errors" section with `stop_invalid_data()` is there because R has no built-in error type for bad input data, where Python raises `ValueError`.
 
 This file is the main script for the project. It follows the section order in "Script structure" in the `scripting` skill, and the standards in `references/coding.md`:
 
@@ -41,7 +54,7 @@ This file is the main script for the project. It follows the section order in "S
 #!/usr/bin/env Rscript
 ################################################################################
 ### [project_name].R
-### [Contact block: see this client's CLAUDE.md]
+### [Contact block: see the nearest CLAUDE.md]
 ### [Description]
 ################################################################################
 
@@ -107,6 +120,10 @@ parse_arguments <- function() {
     message("Invalid --log-level: ", args$log_level)
     quit(status = 2)
   }
+  if (is.null(args$input_file)) {
+    message("Missing required argument: --input-file")
+    quit(status = 2)
+  }
   args
 }
 
@@ -117,7 +134,8 @@ parse_arguments <- function() {
 #' Format a log line
 #'
 #' Gives the same line format as the Python scripts: date and time, logger name,
-#' level, and message, separated by " - ".
+#' level, and message, separated by " - ". The root logger has no name, so `main`
+#' is written in its place (the Python scripts write `__main__`).
 #'
 #' @param record A log record from the logging package
 #' @return The log line as text
@@ -188,7 +206,7 @@ main <- function() {
   setup_logging(args$log_level, args$log_file)
 
   tryCatch({
-    if (is.null(args$input_file) || !file.exists(args$input_file)) {
+    if (!file.exists(args$input_file)) {
       logerror("Input file not found: %s", args$input_file)
       quit(status = 3)
     }
@@ -214,7 +232,9 @@ if (sys.nframe() == 0) {
 The main script:
 
 1. Starts with the shebang line `#!/usr/bin/env Rscript`.
+
 2. Calls `main()` only when it is run as a script (`sys.nframe() == 0`), so that `source()` loads the functions without running the analysis.
+
 3. Loads its supporting scripts, if it has any, with `source()`.
 
 ### .gitignore Template

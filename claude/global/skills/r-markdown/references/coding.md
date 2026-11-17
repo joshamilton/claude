@@ -50,11 +50,7 @@ Follow the `r` skill for the R code in a chunk, and these report details:
 
 6. Start the `setup` chunk with a banner comment that holds a title line and the contact block, as the header of a script does. Find the block with the rule under "Placeholders" in the `project-setup` skill, fill in `[YEAR]` and `[project-name]`, and start each line of the block with `### `.
 
-## Helper functions
-
-Follow "Function Documentation" in the `r` skill, and this report detail:
-
-1. Place new helper functions in the `helper_functions` chunk, in logical order, each with roxygen2 documentation.
+7. Place new helper functions in the `helper_functions` chunk, in logical order. Document each one with roxygen2, as "Function Documentation" in the `r` skill says.
 
 ## Error handling in a report
 

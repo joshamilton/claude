@@ -17,6 +17,7 @@ The values are identifiers, not credentials. They come from the cloud table in t
 Cloud values are of two kinds:
 
 - Values that identify an account or a user (for example project, account, region, profile, queue, service account, network) default to `null` in `params`. Pass them on the command line with the parameter name.
+
 - Pipeline-specific settings (for example machine type, disk size, spot use, retries) keep a shared default in `params`.
 
 GCP has no job queue to choose, because Google Batch schedules the jobs, so it has no queue values. `docker/build.sh` takes `--cloud gcp`, the project, the region, and the repository as flags (see `containers.md` in this folder).
@@ -308,11 +309,17 @@ GCP head node. This is the VM that starts production runs. It uses its attached 
     In the Google Cloud Console:
 
     1. Open Compute Engine, VM instances, in project `[gcp-project]`.
+
     2. Click Create instance.
+
     3. Choose an Ubuntu 24.04 LTS boot disk image, and set the name (for example `nf-head`), machine type, and other settings as needed.
+
     4. Expand Advanced, then Security (labeled Identity and API access in some console versions).
+
     5. Set the service account to `[gcp-orchestrator-service-account]`, not the default Compute Engine service account.
+
     6. Set the access scopes to Allow full access to all Cloud APIs.
+
     7. Create the instance, then connect through IAP.
 
     With the gcloud command line instead:
@@ -364,7 +371,7 @@ GCP head node. This is the VM that starts production runs. It uses its attached 
     gcloud auth application-default revoke 2>/dev/null || true
     unset GOOGLE_APPLICATION_CREDENTIALS
     test ! -f ~/.config/gcloud/application_default_credentials.json \
-      && echo "No user ADC file — metadata credentials will be used"
+      && echo "No user ADC file - metadata credentials will be used"
 
     curl -sf -H "Metadata-Flavor: Google" \
       http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/email
@@ -416,11 +423,17 @@ Access prerequisite, for the Prerequisites list:
 Cloud resources, for the Cloud resources subsection:
 
 - Google Batch enabled in `[gcp-region]` in project `[gcp-project]`.
+
 - The Batch worker service account `[gcp-batch-service-account]`. It needs permission to read `[gcp-repository]` when the pipeline has custom container images.
+
 - The scratch bucket `[gcp-scratch-bucket]` for work directories and test outputs.
+
 - The output bucket `[gcp-output-bucket]` for pipeline outputs.
+
 - The reference bucket `[gcp-reference-bucket]` for databases and other reference data.
+
 - The test bucket `[gcp-test-bucket]` for test samplesheet FASTQs.
+
 - An Artifact Registry repository `[gcp-repository]` (address `[gcp-registry-path]`), only if the pipeline has custom container images.
 
 ### Development Guidelines
@@ -481,4 +494,5 @@ CI replaces `-work-dir` and `--outdir` with `[gcp-scratch-bucket]/ci/<github.run
 Files to add to the tree:
 
 - `.github/workflows/gcp-integration-test.yml`
+
 - `assets/samplesheet_test_googlebatch.csv`
