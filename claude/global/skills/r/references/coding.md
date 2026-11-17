@@ -114,9 +114,9 @@ Put the `library()` calls of groups 1 and 2 inside one `suppressPackageStartupMe
 
 Follow "Plotting" in the `scripting` skill, with these ggplot2 details:
 
-1. Use `theme_bw()` + `theme()`, rather than the default grey theme.
+1. Use `theme_bw()` + `theme()`, rather than the default gray theme.
 
-2. Use `scale_fill_viridis_d()` and `scale_color_viridis_d()` with `option = "viridis"` and `na.value = "grey90"`, so that missing values are light grey.
+2. Use `scale_fill_viridis_d()` and `scale_color_viridis_d()` with `option = "viridis"` and `na.value = "grey90"`, so that missing values are light gray.
 
 3. Format large counts on an axis with `scale_y_continuous(labels = function(x) format(x, big.mark = ",", scientific = FALSE))`.
 

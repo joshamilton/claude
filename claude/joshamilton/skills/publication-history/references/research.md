@@ -6,7 +6,7 @@ How to find every edition of each volume, group them into print runs, and identi
 
 - Edition: one version of the text from one publisher in one format. A new ISBN usually marks a new edition or format.
 
-- Print run, or set: a publisher's uniform issue of a whole series in one format and one design, usually within a span of years and a recognisable ISBN block. This is what a collector means by a matched set.
+- Print run, or set: a publisher's uniform issue of a whole series in one format and one design, usually within a span of years and a recognizable ISBN block. This is what a collector means by a matched set.
 
 - Printing: a later printing of the same edition. It keeps the ISBN.
 
@@ -32,7 +32,7 @@ How to find every edition of each volume, group them into print runs, and identi
 
 - Sort each publisher's editions by ISBN. A run usually occupies one or a few blocks of consecutive ISBNs issued over a span of years. A publisher can switch registrant prefix partway through one run, so a change of prefix does not by itself mean a new run. Check the design and dates.
 
-- Rule out things that look like another run before you call them one, and leave them out of the summary: film or TV tie-ins, foreign-language editions, large-print editions, book-club editions, audio, and e-book ISBNs. E-book ISBNs often appear in catalogues with no format and with dates years after the print run; if no bookseller lists a paperback under them, treat them as e-books.
+- Rule out things that look like another run before you call them one, and leave them out of the summary: film or TV tie-ins, foreign-language editions, large-print editions, book-club editions, audio, and e-book ISBNs. E-book ISBNs often appear in catalogs with no format and with dates years after the print run; if no bookseller lists a paperback under them, treat them as e-books.
 
 - When the user describes several "editions" by their covers, map each one to ISBNs before agreeing. Two of the user's editions may turn out to be two cover designs under the same ISBNs.
 
@@ -83,7 +83,7 @@ How to find every edition of each volume, group them into print runs, and identi
 
     - The page HTML contains `/work/editions/<id>`. The editions list, `https://www.goodreads.com/work/editions/<id>?per_page=100&filter_by_format=Paperback&sort=year`, shows each edition's date, publisher, format and notes such as "Alternate cover", "Movie Tie-in" or "7th Printing".
 
-    - On the editions list, each edition's ISBN-13 is printed on the line labelled `ISBN:` (the ISBN-10 follows in brackets), not on an `ISBN13:` line. Match `ISBN:\s*(97[89]\d{10})`. The ISBN lines sit in a collapsed details block that `inner_text` of the page body leaves out, so read the page HTML (`page.content()`), split it on `class="editionData"`, strip the tags in each block, and match there.
+    - On the editions list, each edition's ISBN-13 is printed on the line labeled `ISBN:` (the ISBN-10 follows in parentheses), not on an `ISBN13:` line. Match `ISBN:\s*(97[89]\d{10})`. The ISBN lines sit in a collapsed details block that `inner_text` of the page body leaves out, so read the page HTML (`page.content()`), split it on `class="editionData"`, strip the tags in each block, and match there.
 
 - Penguin UK (`penguin.co.uk`, which covers Bantam and other Transworld imprints). Its site search does not work for ISBNs, so find the product URL with WebSearch first (the form is `/books/<id>/<slug>/<isbn13>`). Load it with Playwright and read the page HTML; the visible page text shows no publication date. The HTML embeds the format, the publication date as `"publishDate":"YYYY-MM-DD"`, the imprint, page count, trim size as `"trimSize"`, and the list of formats in print (`"editions":[...]`). This is a publisher source for the A or B format question: a trim of 197 x 129 mm was B format. Only titles in print are listed, so an ISBN missing from `"editions"` is out of print or was never a separate product. Cover images are at `https://cdn.penguin.co.uk/dam-assets/books/<isbn13>/<isbn13>-jacket-large.jpg`. The CDN returned HTTP 403 for out-of-print ISBNs (Allen Lane hardcovers) and served images only for titles in print; take covers of out-of-print editions from Goodreads or Internet Archive.
 
@@ -107,7 +107,7 @@ How to find every edition of each volume, group them into print runs, and identi
       print("request failed:", type(e).__name__)
     ```
 
-    The record link to cite is `https://books.google.com/books?id=<id>`. Treat it as a catalogue record: dates and publishers are sometimes wrong, so cross-check them like the OpenLibrary records. Coverage varies by publisher. Add `imageLinks` to `fields` to get the thumbnail, or download the cover directly from `https://books.google.com/books/content?id=<id>&printsec=frontcover&img=1&zoom=1`. It shows the current design only. For old university-press records, the `imageLinks` image can be a scan of the title page, not the cover. Look at it before treating it as a cover.
+    The record link to cite is `https://books.google.com/books?id=<id>`. Treat it as a catalog record: dates and publishers are sometimes wrong, so cross-check them like the OpenLibrary records. Coverage varies by publisher. Add `imageLinks` to `fields` to get the thumbnail, or download the cover directly from `https://books.google.com/books/content?id=<id>&printsec=frontcover&img=1&zoom=1`. It shows the current design only. For old university-press records, the `imageLinks` image can be a scan of the title page, not the cover. Look at it before treating it as a cover.
 
 - Publisher websites are often built with JavaScript. One large publisher's ISBN pages returned "Page not found" to WebFetch while Playwright loaded only the title. Try Playwright, and do not conclude a book does not exist because its publisher page is empty.
 
@@ -121,7 +121,7 @@ How to find every edition of each volume, group them into print runs, and identi
 
 - Some sites time out under repeated automated loads. Retry once, add a short delay between pages, and cache what you have fetched to a JSON file in the scratchpad so a long run can resume.
 
-- WorldCat (search.worldcat.org) is the one catalogue that records physical size, but Cloudflare rate-limits it after about ten page loads from one address and then returns "Error 1015" for a long time; the ISBN URL redirects to a results list, so each record needs a second load. Budget for it, pace at 10 seconds or more per load, and do it before anything else that day, or do without it. In the second run it was lost twice and no size for the US editions could be found.
+- WorldCat (search.worldcat.org) is the one catalog that records physical size, but Cloudflare rate-limits it after about ten page loads from one address and then returns "Error 1015" for a long time; the ISBN URL redirects to a results list, so each record needs a second load. Budget for it, pace at 10 seconds or more per load, and do it before anything else that day, or do without it. In the second run it was lost twice and no size for the US editions could be found.
 
 - OpenLibrary notes: `https://openlibrary.org/isbn/<isbn13>.json` redirects, so use `curl -L`. OpenLibrary has outages: in the second run it refused TCP connections (curl exit 7, "Connection refused") for more than half an hour late in the session, from this machine and from WebFetch's address alike, so it was the site and not a block on this address. Fetch each record once and cache it, and verify links as you go rather than in one burst at the end; a record key returned by the OpenLibrary API earlier in the session is a real record even if the final check cannot reach it. WebFetch is a useful second vantage point to tell an outage from a block. An edition title such as "Kellanved's Reach EXPORT" is a hint that an extra UK ISBN is an export edition.
 

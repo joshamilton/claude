@@ -20,7 +20,7 @@
 
 - Test cases: do not add `evals/` folders or run the benchmark loop unless the user asks (see "Testing policy" in the global `CLAUDE.md`). When the user asks, put the workspace outside the repo (for example `/tmp/<skill-name>-workspace`), not beside the skill.
 
-- Words: write for scientists, not software engineers, as "Voice and Style" in the global `CLAUDE.md` says. Skip software slang and explain an idea in a short everyday phrase.
+- Words: write for scientists, not software engineers, as "Voice and Style" in the global `CLAUDE.md` says. Skip software slang and explain an idea in a short everyday phrase. Use US English spelling, as "Voice and Style" says.
 
 - Formatting: follow "Document Format" in the global `CLAUDE.md`: no bold or italics for emphasis, a blank line between list items, no hard wrapping, and ASCII punctuation.
 
@@ -40,4 +40,6 @@
 
 7. Check that the code fences in each file are balanced.
 
-8. Tell the user which files changed. Do not call the task complete until the user confirms it.
+8. Search the skill for British spellings and usage (for example `grep -n -i -w -E "catalogues?|colour|labelled|recognis[a-z]*|grey|in brackets"`), and fix them. Keep a spelling that comes from an external name, such as a template or a library function.
+
+9. Tell the user which files changed. Do not call the task complete until the user confirms it.

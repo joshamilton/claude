@@ -4,7 +4,7 @@ What the summary contains, how to cite, and how to make and check the PDF.
 
 ## 1. Scope
 
-The summary covers three things only: print history, ISBNs, and cover designs, for the works and print runs the user named (the hardback and paperback formats the user listed).
+The summary covers three things only: print history, ISBNs, and cover designs, for the works and print runs the user named (the hardcover and paperback formats the user listed).
 
 Out of scope, always:
 
@@ -26,13 +26,13 @@ Numbered sections, in this order, unless the user asks for something else:
 
 1. Print history. One short paragraph per print run: publisher, format, the years the run was issued, how many volumes, and which volumes were never issued in that run. One sentence on the ISBN blocks.
 
-2. ISBNs. One table for all runs (one table per series when the summary covers several series): volume number, title, then one column per run. ISBN-13 with hyphens. Each ISBN is a link to its catalogue record (the OpenLibrary edition record, or the Goodreads record when OpenLibrary lacks it). Write "none" where a run has no such volume. One sentence above the table says what the links point to.
+2. ISBNs. One table for all runs (one table per series when the summary covers several series): volume number, title, then one column per run. ISBN-13 with hyphens. Each ISBN is a link to its catalog record (the OpenLibrary edition record, or the Goodreads record when OpenLibrary lacks it). Write "none" where a run has no such volume. One sentence above the table says what the links point to.
 
 3. Cover designs, one section per run. Describe each design in one or two sentences (layout, type, where author and title sit), say when it was used as far as the evidence supports, and show two examples, usually the first and last volume, side by side with short captions.
 
-4. The cover problem, when there is one. Say plainly that one ISBN was printed under more than one design, that catalogues, booksellers and the ISBN do not distinguish them, and what that means for assembling a matched set. Keep it to a few sentences.
+4. The cover problem, when there is one. Say plainly that one ISBN was printed under more than one design, that catalogs, booksellers and the ISBN do not distinguish them, and what that means for assembling a matched set. Keep it to a few sentences.
 
-5. Sources. Short labelled lists: ISBNs and dates, then cover designs. See section 4.
+5. Sources. Short labeled lists: ISBNs and dates, then cover designs. See section 4.
 
 ## 3. The summary stands alone
 
@@ -40,13 +40,13 @@ Numbered sections, in this order, unless the user asks for something else:
 
 ## 4. Citations
 
-- Cite official sources only: library and book catalogues (OpenLibrary edition and work pages, Goodreads book and editions pages, WorldCat, national library catalogues, Internet Archive item pages), the publisher's own pages (book pages, catalogues, announcements of a redesign), and the ISBN agency records.
+- Cite official sources only: library and book catalogs (OpenLibrary edition and work pages, Goodreads book and editions pages, WorldCat, national library catalogs, Internet Archive item pages), the publisher's own pages (book pages, catalogs, announcements of a redesign), and the ISBN agency records.
 
 - Never cite marketplace listings (eBay, AbeBooks, Amazon and similar), fan bibliographies, collector sites, wikis, or forums. They are leads. Confirm each claim in an official source before you report it. If you cannot, leave the claim out and say so in the hand-over.
 
-- For each cover image, cite the official page it came from (a catalogue or publisher page). If an image was seen only on a marketplace listing, do not use it as the cited example; find the same design on an official page, or leave it out.
+- For each cover image, cite the official page it came from (a catalog or publisher page). If an image was seen only on a marketplace listing, do not use it as the cited example; find the same design on an official page, or leave it out.
 
-- Check every link before handing over. A catalogue record that does not exist is worse than no link.
+- Check every link before handing over. A catalog record that does not exist is worse than no link.
 
 ## 5. Style
 

@@ -28,6 +28,7 @@ This guidance holds for chat and for README files, `--help` text, docstrings, an
 
 - Use short sentences, simple words, and concrete paths or commands. Explanations should read like clear lab notes or methods text.
 - Do not use software-engineering slang.
+- Use US English spelling and usage (catalog, color, analyze, labeled, gray, parentheses, hardcover) in chat, in files, and in the names and messages in code. Keep a spelling that comes from an external name or a quotation, such as a library function, a template, or a title.
 - In code, prefer descriptive names in everyday words (for example `quick_check_fastq_header`, not a jargon-heavy name). Names that come from a library and cannot be changed are fine.
 
 ### File Reference Guidelines

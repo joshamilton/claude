@@ -66,7 +66,7 @@ For functions with non-trivial logic (multiple steps, loops, branching, or domai
 
 The language skill gives the code.
 
-- Use a plain white background with light grid lines, not a grey default theme.
+- Use a plain white background with light grid lines, not a gray default theme.
 
 - Use the viridis color scale for categorical fills and colors. It is colorblind-safe and the same in every project.
 
