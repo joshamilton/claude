@@ -20,6 +20,8 @@
 
     - `assets/` for templates
 
+    - `private/` for files that must not be published, such as an API key. List each one in `.gitignore`. The skill tells Claude never to open or print it, and shows how a script reads it.
+
     A skill folder has no `README.md`.
 
 2. Files with the same role have the same name in every skill:
