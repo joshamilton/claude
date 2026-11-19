@@ -38,8 +38,10 @@
 
 6. Search the repo for the old name after a rename or a move, and fix every reference in the same change, including the `README.md`, `plan-*.md`, and other skills.
 
-7. Check that the code fences in each file are balanced.
+7. Check that the code fences in each file are balanced, and that no fence is indented under a plain paragraph. Indent a fence only when it belongs to a list item.
 
 8. Search the skill for British spellings and usage (for example `grep -n -i -w -E "catalogues?|colour|labelled|recognis[a-z]*|grey|in brackets"`), and fix them. Keep a spelling that comes from an external name, such as a template or a library function.
 
-9. Tell the user which files changed. Do not call the task complete until the user confirms it.
+9. Search the whole skill folder for references to previous runs (for example `grep -n -i -E "in one run|another run|earlier (run|session)|previous run|the user (chose|restored|renamed)"`). Read every example, quoted title, and code comment, and list each real name in them (people, bands, albums, songs, labels, catalog numbers, files). Replace each with a placeholder (see rules 6 and 7 in "Where content belongs" in `references/structure.md`). Then, remove the references and state the the decision that resulted. A real name stays only when the tool or site needs it.
+
+10. Tell the user which files changed. Do not call the task complete until the user confirms it.

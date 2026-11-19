@@ -5,13 +5,9 @@ description: Use when the user asks to organize, sort, or clean up a new artist 
 
 # Organize artist
 
-Sort one artist folder into a clean layout: one copy of each album the artist, in `Studio`, `Live`, `Compilation`, and `Box Set` subfolders, with every rejected folder moved to a Delete folder for the user to review. Nothing moves until the user approves a written plan.
+Sort one artist folder into a clean layout: one copy of each album by the artist, in `Studio`, `Live`, `Compilation`, and `Box Set` subfolders, with every rejected folder moved to a Delete folder for the user to review. Nothing moves until the user approves a written plan.
 
-Classical music follows a different set of rules entirely. This skill does not apply to it. If the artist folder is classical, stop and tell the user.
-
-The artist folder comes from the user's request, for example `/path/to/artist/`. If the user did not give one, ask for it before doing anything else.
-
-This skill supplements the music-tagger tool. The skill `music-tagger-setup` holds the repo, the environment, and the command that runs it.
+Follow the section "Rules for the task skills" in the skill `music-tagger-setup`: it covers classical music and the artist folder.
 
 ## Hard limits
 
@@ -47,7 +43,15 @@ This skill supplements the music-tagger tool. The skill `music-tagger-setup` hol
 
 5. When the user approves, make the moves exactly as approved, then list the final tree so the user can check it. Wait for the user's approval.
 
-6. When the user approves, split every single-file rip (one APE or FLAC file plus a CUE sheet) into FLAC tracks. Fix a wrong `FILE` line in the CUE sheet first. Check the result, then delete the single audio file and keep the CUE sheet and the rip log. If the split or the checks fail, leave the album as it is and report it. For a single-file 2-on-1, divide the tracks among its albums and renumber them. Read `references/convert-and-structure.md`, section 1.
+6. When the user approves, split every single-file rip (one APE or FLAC file plus a CUE sheet) into FLAC tracks. Read `references/convert-and-structure.md`, section 1.
+
+    - Fix a wrong `FILE` line in the CUE sheet first.
+
+    - Check the result, then delete the single audio file and keep the CUE sheet and the rip log.
+
+    - If the split or the checks fail, leave the album as it is and report it.
+
+    - For a single-file 2-on-1, divide the tracks among its albums and renumber them.
 
 7. Organize and clean up each album folder with `structure --mode all`. Read `references/convert-and-structure.md`, section 2.
 
@@ -55,12 +59,12 @@ This skill supplements the music-tagger tool. The skill `music-tagger-setup` hol
 
 ## Reference files
 
-- `references/inventory.md`: the inventory and the discography check.
+- `references/inventory.md`: read this at step 2. Covers the inventory and the discography check.
 
-- `references/folder-layout.md`: the folders, the album folder names, volumes, 2-on-1 discs, and box sets.
+- `references/folder-layout.md`: read this at step 3. Covers the folders, the album folder names, volumes, 2-on-1 discs, and box sets.
 
-- `references/what-to-keep.md`: one copy per album, what is kept, and the Delete folder.
+- `references/what-to-keep.md`: read this at step 3. Covers one copy per album, what is kept, and the Delete folder.
 
-- `references/plan.md`: what the plan holds.
+- `references/plan.md`: read this at step 4. Covers what the plan holds.
 
-- `references/convert-and-structure.md`: splitting single-file rips and running `structure`.
+- `references/convert-and-structure.md`: read this before steps 6 and 7. Covers splitting single-file rips and running `structure`.

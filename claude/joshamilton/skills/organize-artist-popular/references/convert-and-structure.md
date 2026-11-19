@@ -43,6 +43,8 @@ A single-file rip is an album folder (or disc folder) with one audio file (`.fla
 
 `--dir` is a grouping folder (`Studio`, `Live`, `Compilation`, or `Box Set`). The command treats every subfolder of `--dir` as an album folder, and works inside each album folder, including its disc subfolders. Do not run it on the artist folder: it would treat `Studio` and the other grouping folders as albums. Run it once for each grouping folder that exists:
 
-    ```bash
-    conda run -n music-tagger --no-capture-output python /Users/joshamilton/Documents/repos/music-tagger/src/tagger.py structure --library-type popular --dir "<grouping folder>" --mode all --output-csv "/tmp/structure-<grouping folder name>.csv"
-    ```
+```bash
+conda run -n music-tagger --no-capture-output python <tagger> structure --library-type popular --dir "<grouping folder>" --mode all --output-csv "/tmp/structure-<grouping folder name>.csv"
+```
+
+`<tagger>` is defined in the skill `music-tagger-setup`.

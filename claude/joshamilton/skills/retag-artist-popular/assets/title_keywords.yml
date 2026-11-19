@@ -1,0 +1,46 @@
+# title_keywords.yml
+# Copyright (c) 2026, Joshua J. Hamilton
+#
+# Patterns that title_fixes.py uses to sort the parenthetical text of a TITLE: the text inside parentheses ( ) or square brackets [ ].
+# Edit this file to change what the script proposes. The script itself does not change.
+#
+# Each pattern is a Python regular expression, matched without regard to case
+# against the text inside one piece of parenthetical text, without the parentheses or
+# brackets and the spaces around the text. "(Live)" is tested as "Live". A pattern may
+# match anywhere in the text; use ^ and $ to match the whole text.
+#
+# Parenthetical text that matches no pattern is not changed. It is marked "review" in the CSV,
+# because it may be a subtitle that stays ("<song> (<subtitle>)").
+
+# A guest credit. The parenthetical text is removed (ARTIST carries the credit).
+credit_patterns:
+  - '^(feat\.?|featuring|ft\.?|with|w/)\s'
+
+# Accessory information. The parenthetical text is removed.
+accessory_patterns:
+  - '^live\b'
+  - '^bonus tracks?$'
+  - '^reprise$'
+  - '\b(re)?mix(es)?\b'
+  - '\bedit\b'
+  - '\bremaster(ed)?\b'
+  - '^take \d+$'
+  - '^tk \d+$'
+  - '^(alternate|alt\.?) (take|version)\b'
+  - '^instrumental$'
+  - '^from\b'
+
+# A part number. "(Part 1)" becomes ", Part 1". The pattern has one group: the number.
+part_pattern: '^part (\d+)$'
+
+# Whole words that usually carry an accent or an umlaut, written without it.
+# A title with one of them is marked "accent" in the CSV.
+accent_words:
+  - uber
+  - cafe
+
+# Two different titles in the folder are marked "spelling" when they read the same
+# once case, accents, and punctuation are ignored, or when they differ by at most
+# this many letters. Titles shorter than the minimum length are compared exactly.
+spelling_max_distance: 2
+spelling_min_length: 8

@@ -12,13 +12,17 @@
 
 5. A skill that extends an Anthropic skill says so, for example "This skill extends the guidance in the Anthropic skill named `docx`".
 
+6. A skill states rules, not the history of the run that taught them. Do not write "in one run ...", "in earlier sessions ...", or "the user chose ..." for a past run. Keep a decision as a rule ("ask when sources disagree").
+
+7. Every example in a skill is general. Write it with placeholders in angle brackets that say what goes there (`<first name> <last name>`, `<band>`, `<song>`, `<catalog number>`, `<album>`), and show the pattern, for example `<last name>, <first name>`. Where a placeholder hides the pattern, such as the order of a name, use an invented name that looks real (for example Joe Smith or Jane Doe), and show the result (`Smith, Joe`). Do not use real names of people, bands, albums, songs, labels, catalog numbers, or files. This holds for rules, examples, comments in code and data files, and the example in a description. A real name is allowed only where the skill needs it to work: a tool, a library, a site, a path, a setting name, or a value the tool expects. Name a genre- or source-specific tip as such ("For jazz, ..."). When a lesson comes from a real case, rewrite the case as a pattern before it goes into the skill.
+
 ## Files and file names
 
 1. A skill folder holds `SKILL.md`, then:
 
     - `references/` for documentation that Claude reads when needed
 
-    - `assets/` for templates
+    - `assets/` for templates, and for the working scripts and settings files that the skill ships and runs (for example a script and the pattern file it reads). A shipped script follows the language skill (for example `python`) and its examples follow rule 7 in "Where content belongs"
 
     - `private/` for files that must not be published, such as an API key. List each one in `.gitignore`. The skill tells Claude never to open or print it, and shows how a script reads it.
 

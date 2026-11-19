@@ -70,6 +70,10 @@ Personal skills (`claude/joshamilton/skills/`), available in my personal repos:
 
 - `publication-history` — researches the print history of a book or series and writes a stand-alone summary with a PDF copy
 
+- `organize-artist-popular` - organizes a folder of popular music in the library, to the standards in my `music-tagger` library
+
+- `retag-artist-popular` - tag a folder of popular music in the library, to the standards in my `music-tagger` library
+
 Client skills (`claude/trophicnexus/<client>/skills/`) hold only what belongs to one client. Anything that any client could need goes into a global skill instead.
 
 ### Where I use Claude

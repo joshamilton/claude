@@ -16,7 +16,7 @@ Step 3 of `SKILL.md`: where each album goes and what its folder is called.
 
 - Archival live concerts go in `Live`, one folder per release.
 
-- Expanded or complete editions of live albums, go in `Live` under their own folder year (year of first release), next to the original album they repeat.
+- Expanded or complete editions of live albums go in `Live` under their own folder year (year of first release), next to the original album they repeat.
 
 - Album folder name: `[YYYY] Album`.
 
@@ -30,5 +30,15 @@ Step 3 of `SKILL.md`: where each album goes and what its folder is called.
 
 - Leave disc subfolders as they are: `structure` renames them to `Disc N` (step 7). Name any disc subfolder you create `Disc 1`, `Disc 2`.
 
-- A 2-on-1 CD (two albums on one disc) that is the only source on disk for at least one of its albums is split into its albums. It then supplies all of them, and any separate rip of the other album goes to Delete. Rename the folder for one album, create a folder for the other, move the other album's tracks into it, and copy the whole-disc log, CUE, and cover into it. The 2-on-1 wins over separate rips even when they are verified copies and the 2-on-1 drops a track. A single-file 2-on-1 (one audio file plus a CUE sheet) is first split into tracks in step 6 (`references/convert-and-structure.md`), and then its tracks are divided among the albums as described here. When every album on the disc is also on disk separately, the 2-on-1 goes to Delete whole, under the repackaged-albums rule in `references/what-to-keep.md`.
+- A 2-on-1 CD (two albums on one disc) that is the only source on disk for at least one of its albums is split into its albums. It then supplies all of them.
+
+    - Any separate rip of the other album goes to Delete.
+
+    - To split it: rename the folder for one album, create a folder for the other, move the other album's tracks into it, and copy the whole-disc log, CUE, and cover into it.
+
+    - The 2-on-1 wins over separate rips even when they are verified copies and the 2-on-1 drops a track.
+
+    - A single-file 2-on-1 (one audio file plus a CUE sheet) is first split into tracks in step 6 (`references/convert-and-structure.md`). Then its tracks are divided among the albums as described here.
+
+    - When every album on the disc is also on disk separately, the 2-on-1 goes to Delete whole, under the repackaged-albums rule in `references/what-to-keep.md`.
 

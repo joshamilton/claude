@@ -12,7 +12,11 @@ Step 3 of `SKILL.md`: which copy of each album stays, and what goes to Delete.
 
 - Same master, two rips: when a track-by-track rip and a single-file rip hold the same master (same year and catalog), keep the track-by-track rip. The same holds for an image rip that was later split into tracks: when two rips share the same table of contents, keep the one ripped track by track with AccurateRip results, and flag any track AccurateRip could not confirm.
 
-- Compilations (greatest hits, best-of, live hits, outtake collections, and collections of an artist's singles) are kept, in `Compilation`. A compilation draws its tracks from other sources, so the one-copy rule does not compare it with the albums, even when every track is also on an album. The one-copy rule still applies between editions of the same compilation, except that editions with different numbers of discs are each kept (the exception above).
+- Compilations (greatest hits, best-of, live hits, outtake collections, and collections of an artist's singles) are kept, in `Compilation`.
+
+    - A compilation draws its tracks from other sources, so the one-copy rule does not compare it with the albums, even when every track is also on an album.
+
+    - The one-copy rule still applies between editions of the same compilation, except that editions with different numbers of discs are each kept (the exception above).
 
 - Repackaged albums are not compilations: a 2-on-1 set or a box set of complete albums only puts whole albums in a new package. Split out any album that is not on disk separately, then move the set to Delete.
 
